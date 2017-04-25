@@ -511,7 +511,7 @@ contains
 
   subroutine Store_Data( )
 
-    write(Out,*) E, N/V, W/V, (Hbin(k),k=1,NBins)
+    write(Out,*) E, V, W, (Hbin(k),k=1,NBins)
 
   end subroutine Store_Data
 
