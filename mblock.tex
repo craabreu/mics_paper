@@ -106,9 +106,9 @@ Finally, we combine the results in Eq.~\eqref{eq:expanded ensemble probabilities
 \label{eq:mixture ensemble}
 \rho_0(x) = \sum_{i=1}^m \pi_i \rho_i(x),
 \end{equation}
-meaning that an expanded ensemble distribution is actually a \textit{mixture model}\cite{Lindsay_1995, Marin_2005} composed of the distributions corresponding to the $m$ states. Given that $\rho_0 = \frac{1}{Z_0}e^{-u_0}$, we can resort to Eq.~\eqref{eq:state_prob_density_Z0} for expressing the reduced potential of the mixture state, which is
+meaning that an expanded ensemble distribution is actually a \textit{mixture model}\cite{Lindsay_1995, Marin_2005} composed of the distributions corresponding to the $m$ states. In this context, the vector $\vt \pi$ of state probabilities can be referred to as the mixture composition. In addition, since $\rho_0 = \frac{1}{Z_0}e^{-u_0}$, we can resort to Eq.~\eqref{eq:state_prob_density_Z0} for expressing the reduced potential of the mixture state as
 \begin{equation}
-\label{eq:expanded ensemble potential}
+\label{eq:mixture potential}
 u_0(x) = -\ln \sum_{i=1}^m \pi_i e^{-u_i(x) + f_i}.
 \end{equation}
 
@@ -159,10 +159,6 @@ where $\mt W$ is an $n \times m$ matrix with $W_{k,i} = \frac{q_i(x_k) \hat c_i^
 \end{equation}
 
 In the case of a perturbation calculation to compute the relative free energy of an unsampled state with reduced energy $u(x)$,
-\begin{equation}
-\label{eq:mixture potential}
-u_0(x) = -\ln \sum_{i=1}^m \pi_i e^{-u_i(x) + f_i}
-\end{equation}
 
 In a comment attached to Ref.~\onlinecite{Kong_2003}, Doss suggested a way of exploring this possibility in order to estimate the uncertainties of not only free-energy differences, but also other ensemble averages given by Eq.~\eqref{eq:nbs sampling reweighting}. His suggestion requires estimating a matrix $\hat {\mt \Theta}$ whose each element $\hat \Theta_{i,j}$ is the asymptotic covariance between $\ln \hat c_i$ and $\ln \hat c_j$ obtained after solving Eq.~\eqref{eq:kong et al estimator} self-consistently. In MBAR, this is done by using the formula proposed by Kong \textit{et al}.,\cite{Kong_2003} which relies on the assumption of iid samples. It is
 \begin{equation*}
@@ -171,7 +167,11 @@ In a comment attached to Ref.~\onlinecite{Kong_2003}, Doss suggested a way of ex
 
 \section{Taking Full Advantage of Correlated Data from Multiple States}
 
-The requirement of subsampling often causes MBAR to waste a considerable amount of data. Even though the discarded configurations carry less information than do the ones that remain, they could possibly have a positive impact on the quality of a statistical analysis. Here we develop an unwasteful extension of MBAR, which allows us to use all available data even if individual samples exhibit distinct mixing times. Our starting is an exact expression obtained from Eqs.~\eqref{eq:nbs sampling free energy} and \eqref{eq:mixture potential}, which is
+The requirement of subsampling often causes MBAR to waste a considerable amount of data. Even though the discarded configurations carry less information than do the ones that remain, they could possibly have a positive impact on the quality of a statistical analysis. Here we develop an unwasteful extension of MBAR, which allows us to use all available data even if individual samples exhibit distinct mixing times.
+
+\subsection{Relative Free Energies of Sampled States}
+
+The starting point of our proposal is an exact expression obtained from Eqs.~\eqref{eq:nbs sampling free energy} and \eqref{eq:mixture potential}, which is
 \begin{equation}
 \label{eq:free energy exact}
 f_i = -\ln \left\langle \frac{e^{-u_i}}{\sum_{j=1}^m \pi_j e^{-u_j + f_j}} \right\rangle_0.
@@ -179,17 +179,17 @@ f_i = -\ln \left\langle \frac{e^{-u_i}}{\sum_{j=1}^m \pi_j e^{-u_j + f_j}} \righ
 
 In MBAR, the average above is estimated by applying Eq.~\eqref{eq:average_estimator} to the pooled sample $\mathcal S$ as a whole. This decision is the cause of all restraints discussed in the preceding section, since all configurations in $\mathcal S$ must be identically distributed according to Eq.~\eqref{eq:mixture ensemble}, so that both $\vt \pi$ and $\vt f$ can be properly determined. Nevertheless, one can show via Eqs.~\eqref{eq:ensemble average} and \eqref{eq:mixture ensemble} that, for a mixture model,
 \begin{equation}
-\label{eq:average in mixture state}
+\label{eq:mixture average}
 \langle A \rangle_0 = \sum_{i=1}^m \pi_i \langle A \rangle_i.
 \end{equation}
 
 Therefore, we can compute an average at the mixture state from averages at the individual ones, that is,
 \begin{equation}
-\label{eq:average estimator in mixture state}
-{\overline A}_0 = \sum_{i=1}^m \frac{\pi_i}{n_i} \sum_{k=1}^m A(x_{i,k}).
+\label{eq:mixture average estimator}
+{\overline A}_0 = \sum_{i=1}^m \pi_i \overline{A}_i = \sum_{i=1}^m \frac{\pi_i}{n_i} \sum_{k=1}^m A(x_{i,k}).
 \end{equation}
 
-This requires no assumption on the distribution of the pooled sample as a whole. Moreover, the estimator is valid regardless of the mixture composition $\vt \pi$, which can thus be specified beforehand, leaving only the relative free energies to be estimated. Evidently, the choice of $\vt \pi$ might affect the asymptotic behavior of the estimator and this will be a topic of discussion shortly. The new estimating equation for the relative free energies, which emerges from Eqs.~\eqref{eq:average_estimator}, \eqref{eq:free energy exact}, and \eqref{eq:average in mixture state}, is
+This requires no assumption on the distribution of the pooled sample as a whole. Moreover, the estimator is valid regardless of the mixture composition $\vt \pi$, which can thus be specified beforehand, leaving only the relative free energies to be estimated. Evidently, the choice of $\vt \pi$ might affect the asymptotic behavior of the estimator and this will be a topic of discussion shortly. The new estimating equation for the relative free energies, which emerges from Eqs.~\eqref{eq:average_estimator}, \eqref{eq:free energy exact}, and \eqref{eq:mixture average}, is
 \begin{equation}
 \label{eq:mblock free energy estimator}
 {\hat f}_i = -\ln \sum_{j=1}^m \frac{\pi_j}{n_j} \sum_{k=1}^{n_j} \frac{e^{-u_i(x_{j,k})}}{\sum_{s=1}^m \pi_s e^{-u_s(x_{j,k}) + {\hat f}_s}}.
@@ -198,7 +198,8 @@ This requires no assumption on the distribution of the pooled sample as a whole.
 As with the MBAR estimator, we again have a system of equations that must be solved self-consistently after setting, for instance, the value of $\hat f_1$. In contrast to that case, however, the state at which each configuration was sampled is now a relevant information, unless we specify $\pi_j = {n_j}/{n}$ in order to recover Eq.~\eqref{eq:mbar free energy estimator}. Doss and Tan\cite{Doss_2014} proposed an equivalent estimator and investigated its asymptotic behavior under some special conditions. In a subsequent study, Roy \textit{et al}.\cite{Roy_2018} established a CLT applicable when each individual sample originates from a Markov process with polynomial-rate convergence and can be split into uncorrelated blocks of equal size. Here we assume the validity of these conditions and consider that the statistical inefficiency $g_i$, computed from Eq.~\eqref{eq:statistical inefficiency}, is a sufficiently large block size for the sample obtained at a state $i$. Therefore, such sample is split into a number of blocks given by
 \begin{equation*}
 \label{eq:mblock number of blocks}
-n^B_i = \left\lfloor \frac{n_i + g_i - 1}{g_i} \right\rfloor,
+%n^B_i = \left\lfloor \frac{n_i + g_i - 1}{g_i} \right\rfloor,
+n^B_i = \left\lfloor \frac{n_i}{g_i} \right\rfloor,
 \end{equation*}
 where $\lfloor \cdot \rfloor$ is the floor function. One usually refers to $n^B_i$ as an \textit{effective sample size}. As Roy \textit{et al}.\cite{Roy_2018} suggested and our results will confirm, a suitable specification for the marginal probability of each state $i$ is
 \begin{equation}
@@ -208,45 +209,71 @@ where $\lfloor \cdot \rfloor$ is the floor function. One usually refers to $n^B_
 
 The assumption of uncorrelated blocks will be crucial for determining the asymptotic uncertainty of the estimator in Eq.~\eqref{eq:mblock free energy estimator}. Henceforth, the proposed multistate blocking method will be referred to as MBLOCK.
 
-\subsection{Relative Free Energies of Sampled States}
+\subsection{Maximum Likelihood Approach and Numerical Computation}
 
-The non-linear system in Eq.~\eqref{eq:mblock free energy estimator} is a maximum likelihood estimator which can be derived from the log-quasi-likelihood function\cite{Doss_2014, Tan_2015, Roy_2018}
+The non-linear system in Eq.~\eqref{eq:mblock free energy estimator} is a maximum likelihood (ML) estimator that can be derived from the following log-quasi-likelihood function:\cite{Doss_2014, Tan_2015, Roy_2018}
 \begin{equation}
-\label{eq:gmbar log quasi-likelihood}
+\label{eq:mblock log-quasi-likelihood}
 \ln \mathcal L = \sum_{k=1}^m \frac{\pi_k}{n_k} \sum_{l=1}^{n_k} \ln p_k(x_{k,l}),
 \end{equation}
-where $p_i(x)$ is the conditional probability $p(i|x)$ which, after combining Eqs.~\eqref{eq:expanded ensemble prior} and \eqref{eq:expanded ensemble posterior}, is given by
+where $p_i(x)$ is the conditional probability $p(i|x)$, obtained by combining Eqs.~\eqref{eq:expanded ensemble prior} and \eqref{eq:expanded ensemble posterior}, that is,
 \begin{equation}
 \label{eq:mixture posterior probability}
 p_i(x) = \frac{\pi_i e^{-u_i(x) + f_i}}{\sum_{j=1}^m \pi_j e^{-u_j(x) + f_j}}.
 \end{equation}
 
-By straightforward differentiation, we can obtain the first and second derivatives of $\ln p_k(x)$ with respect to $f_i$ and $f_j$, which are \begin{equation*}
-\frac{\partial \ln p_k}{\partial f_i} = \delta_{i,k} - p_i \quad \text{and} \quad \frac{\partial^2\ln p_k}{\partial f_i \partial f_j} = -p_i(\delta_{i,j} - p_j).
-\end{equation*}
-where $\delta_{i,j}$ is the Kronecker delta. From these derivatives, we find out that
+It is now convenient to introduce a vector/matrix notation. We start by defining a vector-valued configurational property $\vt p(x)$, whose each entry is given by Eq.~\eqref{eq:mixture posterior probability}, and a matrix-valued property $\mt \Omega(x) = {\vt p}(x)\tr{\vt p}(x)$, where $\tr{\vt p}$ is the transpose of $\vt p$. Note that Eqs.~\eqref{eq:average_estimator} and \eqref{eq:mixture average estimator} naturally extend to multivalued properties, so that we can use them to compute averages like $\overline{\vt p}_i$, $\overline{\mt \Omega}_i$, $\overline{\vt p}_0$, and $\overline{\mt \Omega}_0$. Let us introduce $\vt g(\vt f) = - \nabla_{\vt f} \ln \mathcal L$ and $\mt B(\vt f) = \nabla_{\vt f} \vt g$, thus the reciprocal of the gradient and the Hessian of the log-quasi-likelihood function with respect to vector $\vt f$, respectively. The first- and second-order derivatives of $\ln p_k(x)$ with respect to $f_i$ and $f_j$ are
 \begin{equation*}
-\frac{\partial \ln \mathcal L}{\partial f_i} = \pi_i - \sum_{k=1}^m \frac{\pi_k}{n_k} \sum_{l=1}^{n_k} p_i(x_{k,l}),
+\frac{\partial \ln p_k}{\partial f_i} = \delta_{i,k} - p_i \quad \text{and} \quad \frac{\partial^2\ln p_k}{\partial f_i \partial f_j} = -p_i(\delta_{i,j} - p_j),
 \end{equation*}
-and
-\begin{align*}
-\frac{\partial^2 \ln \mathcal L}{\partial f_i \partial f_j} = &-\delta_{i,j} \sum_{k=1}^m \frac{\pi_k}{n_k} \sum_{l=1}^{n_k} p_i(x_{k,l}) + \\
-&+ \sum_{k=1}^m \frac{\pi_k}{n_k} \sum_{l=1}^{n_k} p_i(x_{k,l}) p_j(x_{k,l}).
-\end{align*}
-
-It now convenient to introduce a vector/matrix notation. We start by defining a vector-valued configurational property $\vt p(x)$, whose each entry is given by Eq.~\eqref{eq:mixture posterior probability}, and a matrix-valued property $\mt \Omega(x) = {\vt p}(x)\tr{[{\vt p}(x)]}$. With these definitions, we can rewrite the derivatives above as
+where $\delta_{i,j}$ is the Kronecker delta. Finally, these results can be applied together with Eqs.~\eqref{eq:mblock log-quasi-likelihood} and \eqref{eq:mixture average estimator} to yield
+\begin{align}
+\vt g(\vt f) &= \overline{\vt p}_0 - \vt \pi \quad \text{and} \\
+\mt B(\vt f) &= \text{diag}(\overline{\vt p}_0) - \overline{\mt \Omega}_0,
+\end{align}
+where $\text{diag}(\cdot)$ returns a diagonal matrix built from the entries of a vector. For a given pooled sample $\mathcal S$ and predefined mixture composition $\vt \pi$, both $\vt g$ and $\mt B$ are exclusive functions of the free-energy vector $\vt f$. The MLE $\hat{\vt f}$ is thus the solution of $\vt g = \vt 0$, which occurs when
 \begin{equation}
-\nabla_{\vt f} \ln \mathcal L = \vt \pi - \overline{\vt p}_0
+\label{eq:mblock estimator in matrix form}
+\overline{\vt p}_0 = \vt \pi,
 \end{equation}
-and
+that is, when the computed expectation of $\vt p(x)$ in the mixture state equals the specified mixture composition. The equation above is just a reformulation of Eq.~\eqref{eq:mblock free energy estimator}, given that $\overline{\vt p}_0$ is defined as in Eq.~\eqref{eq:mixture average estimator}. Another interpretation for the ML estimator $\hat{\vt f}$ is possible by defining a stochastic matrix $\mt O = [\begin{array}{ccc} \overline{\vt p}_1 & \cdots & \overline{\vt p}_m \end{array}]$, known as the \textit{overlap matrix}, whose applicability in the quantification of phase-space overlap in multistate methods was analyzed in Ref.~\onlinecite{Klimovich_2015}. Its definition allows us to rewrite Eq.~\eqref{eq:mblock estimator in matrix form} as
 \begin{equation}
-\nabla_{\vt f} \nabla_{\vt f} \ln \mathcal L = -\text{diag}(\overline{\vt p}_0) + \overline{\mt \Omega}_0
+\mt O \vt \pi = \vt \pi,
+\end{equation}
+meaning that the ML estimator $\hat{\vt f}$ is the one for which the overlap matrix $\mt O$ has the mixture composition $\vt \pi$ as its stationary distribution, which is guaranteed to exist if $\mt O$ is ergodic.
+
+Newton-Raphson:
+\begin{equation}
+\label{eq:mblock Newton-Raphson}
+{\vt f}_{[2:m]} \leftarrow {\vt f}_{[2:m]} - \vt \phi,
+\end{equation}
+where $\vt \delta$ is the solution of the linear system
+\begin{equation}
+{\mt B}_{[2:m,2:m]} {\vt \phi} = {\vt g}_{[2:m]}
 \end{equation}
 
-as a vector property whose each 
+\subsection{Uncertainty of Relative Free Energies}
+
+Considering that all individual samples are independent:
+\begin{equation}
+\text{cov}(\overline{\vt y}_0,\overline{\vt z}_0) = \sum_{i=1}^m \pi_i^2 \text{cov}(\overline{\vt y}_i,\overline{\vt z}_i).
+\end{equation}
+
+Batch mean (block) estimator:\cite{Geyer_1992}
+\begin{equation}
+\text{cov}(\overline{\vt y}_0,\overline{\vt z}_0) = \sum_{i=1}^m  \frac{\pi_i^2}{n^B_i(n^B_i - 1)} \sum\limits_{j=1}^{n^B_i} (\overline{\vt y}^B_{i,j} - \overline{\vt y}_i) \tr{(\overline{\vt z}^B_{i,j} - \overline{\vt z}_i)}.
+\end{equation}
+
+The average of vector-valued property $\vt a(x)$ for the $j$-th block of the sample at state $i$ is
+\begin{equation}
+\overline{\vt y}_{i,j} = \frac{1}{g_i} \sum_{k=1}^{g_i} {\vt y}\left(x_{i,g_i(j-1)+k}\right),
+\end{equation}
 
 
-\subsection{Asymptotic Covariance of Relative Free Energies}
+
+\begin{equation}
+\nabla_{\vt f}\overline{\vt p}_0 = \mt B.
+\end{equation}
 
 \begin{gather}
 \overline{\vt z}_0 = \sum_{i=1}^m \pi_i \overline{\vt z}_i \\
@@ -255,184 +282,15 @@ as a vector property whose each
 
 
 
-\section{DRAFT}
-
-Geyer\cite{Geyer_1994} developed 
-
-Log-quasi-likelihood:\cite{Doss_2014, Tan_2015, Roy_2018}
-\begin{equation}
-\label{eq:gmbar log quasi-likelihood}
-\ln \mathcal L = \sum_{k=1}^m \frac{\pi_k}{n_k} \sum_{l=1}^{n_k} \ln p(k|x_{k,l}),
-\end{equation}
-where
-
-\begin{equation*}
-\ln p(k|x) = -u_k(x) + f_k + \ln \pi_k - \ln \sum_{s=1}^m \pi_s e^{-u_s(x) + f_s}.
-\end{equation*}
-
-\begin{equation*}
-s_i = \frac{\partial \ln \mathcal L}{\partial f_i} = \pi_i - \sum_{k=1}^m M_{i,k} \pi_k,
-\end{equation*}
-where $M_{i,k}$ is the mean posterior probability of state $i$ among the configurations sampled at state $k$, that is,
-\begin{equation*}
-M_{i,k} = \frac{1}{n_k} \sum_{l=1}^{n_k} p(i|x_{k,l}).
-\end{equation*}
-
-Note that $\mt M$ is the overlap matrix defined in Ref.~\onlinecite{Klimovich_2015}.
-
-If we define an information matrix $\mt B$ as the reciprocal of the Hessian matrix of $\ln \mathcal L$ with respect to the relative free energies, so that $B_{i,j} = -\frac{\partial^2 \ln \mathcal L}{\partial f_i \partial f_j}$, we have
-\begin{equation*}
-B_{i,j} = \delta_{i,j} \sum_{k=1}^m M_{i,k} \pi_k - \sum_{k=1}^m \frac{\pi_k}{n_k} \sum_{l=1}^{n_k} p(i|x_{k,l})p(j|x_{k,l}).
-\end{equation*}
-
-In matrix notation:
-\begin{equation*}
-\mt B = \text{diag}(\mt M \vt \pi) - \sum_{i=1}^m \frac{\pi_i}{n_i} \mt P_i \tr{\mt P}_i,
-\end{equation*}
-where
-\begin{equation*}
-\mt \Omega_k = \frac{\mt P_k \tr{\mt P}_k}{n_k}.
-\end{equation*}
-
-
-\begin{equation}
-x_{max} + \ln \sum_{i=1}^n a_i e^{x_i -x_{max}}
-\end{equation}
-
-Newton-Raphson:
-\begin{equation*}
-\Delta \vt f
-\end{equation*}
-
-
 \subsection{Free-Energy Perturbation and Reweighting}
 
 \begin{equation*}
 \langle e^{u_0 - u} \rangle = \sum_{i=1}^m \frac{\pi_i}{n_i}\sum_{j=1}^{n_i} 
 \end{equation*}
 
-\section{DRAFT}
-
-Note that Eq.~\eqref{eq:ensemble average} is valid regardless of the statistical inefficiency of the sample, which makes the equation above .
-
-
-In the subsections that follow, we discuss on the estimation of the relative free energies and on the reweighting procedures to compute free energies and other properties at both sampled and unsampled states.
-
-
-, but we leave the discussion for the 
-
-
-
-
-Thus, a new exact version of Eq.~\eqref{eq:mbar free energy exact} is
-
-The equation above suggests a new estimator that requires no assumption about 
-
-
-\begin{equation}
-\rho_0(x) = \frac{1}{Z_0} \sum_{i=1}^m \pi_i e^{-u_i(x) + f_i}.
-\end{equation}
-
-
-
-First, Eqs.~\eqref{eq:expanded ensemble prior} and \eqref{eq:expanded ensemble potential} can be combined to give
-\begin{equation}
-\label{eq:mblock potential}
-f_i = -\ln \left\langle \frac{e^{-u_i}}{\sum_{j=1}^m \pi_j e^{-u_j + f_j}} \right\rangle_0.
-\end{equation}
-
-
-
-As an argument to back up the proposed method, we state that a polled sample as the one in Eq.~\eqref{eq:pooled sample} can be used to estimate 
-
-The proposed method is also a mixture model,  
-
-
-
-
-
-A set of equations that link the relative free energies to ensemble averages, but are devoid of such weights, can be obtained from Eqs.~\eqref{eq:nbs sampling free energy}, \eqref{eq:expanded ensemble prior}, and \eqref{eq:expanded ensemble potential}. It is, for all $i$ from $1$ to $m$,
-
-
-
-
-
-Following this reasoning, the same importance is assigned \textit{a priori} to every configuration in the pooled sample $\mathcal S$, that is, 
-
-
-. This makes $\pi_i = n_i/n$, where $n = \sum_{i=1}^m n_i$, since each configuration 
-
-
-
-This renders the association of a state to each configuration irrelevant, so that we can overlook the subset structure of Eq.~\eqref{eq:pooled sample} and write $\mathcal S = \{x_k\}_{k=1}^n$. The only information 
-
-The prior probability of each state is proportional to 
-
-makes $\pi_i = n_i/n$, where $n = \sum_{i=1}^m n_i$, and renders the association of configurations to states irrelevant. We can thus overlook the subset structure of Eq.~\eqref{eq:pooled sample} and write $\mathcal S = \{x_k\}_{k=1}^n$. Finally, the estimator that stems from Eq.~\eqref{eq:mbar free energy exact} is
-
-This expression, which is equivalent to Eq.~11 of Ref.~\onlinecite{Shirts_2008}, could have also been obtained directly from the estimators in Eqs.~\eqref{eq:expanded ensemble histogram estimator} and \eqref{eq:expanded ensemble FEP estimator}. Some of its features deserve attention. First, it is not an isolated estimator, but a self-consistent system of equations whose solution estimates the whole set $\{f_i\}_{i=1}^m$. Second, it is 
-
-Log-quasi-likelihood:\cite{Geyer_1994}
-\begin{equation*}
-\ln \mathcal L = \sum_{k=1}^n \ln p(i_k|x_k) = \sum_{k=1}^n -u_i(x) + \eta_i - \ln \sum_{j=1}^m e^{-u_j(x) + \eta_j}.
-\end{equation*}
-
-\begin{equation}
-\label{eq:mbar log quasi-likelihood}
-\ln \mathcal L = \frac{1}{n} \sum_{k=1}^m \sum_{l=1}^{n_k} \ln p(k|x_{k,l}),
-\end{equation}
-where
-\begin{equation*}
-\ln p(k|x) = -u_k(x) + f_k + \ln \pi_k - \ln \sum_{s=1}^m \pi_s e^{-u_s(x) + f_s}.
-\end{equation*}
-
-
-\section{A Generalization of MBAR}
-
-Eqs.~\eqref{eq:expanded ensemble prior}, \eqref{eq:expanded ensemble evidence}, and \eqref{eq:state_prob_density_Z0} can be combined to give
-\begin{equation*}
-\rho_0(x) = \frac{1}{Z_0} \sum_{i=1}^m \pi_i e^{-u_i(x) + f_i} = \sum_{i=1}^m \pi_i \rho_i(x).
-\end{equation*}
-
-This shows that $\rho_0(x)$ is a mixture of the probability densities of all states. Therefore, an ensemble average at state $0$ is
-\begin{equation*}
-\langle A \rangle_0 = \sum_{i=1}^m \pi_i \langle A \rangle_i.
-\end{equation*}
-
-Thus, from Eq.~\eqref{eq:mbar free energy exact}:
-\begin{equation}
-f_i = -\ln \sum_{j=1}^m \pi_j \left\langle \frac{e^{-u_i}}{\sum_{s=1}^m \pi_s e^{-u_s + f_s}} \right\rangle_j.
-\end{equation}
-
-GMBAR Estimator:
-\begin{equation}
-\hat f_i = -\ln \sum_{j=1}^m \frac{\pi_j}{n_j} \sum_{k=1}^{n_j} \frac{e^{-u_i(x_{j,k})}}{\sum_{s=1}^m \pi_s e^{-u_s(x_{j,k}) + \hat f_s}}.
-\end{equation}
-
-
-Definition 1: $p_i(x)$ is the probability of state $i$ for a given configuration $x$
-\begin{equation}
-p_i(x) = p(i|x) = \frac{\pi_i e^{-u_i(x) + f_i}}{\sum_{s=1}^m \pi_s e^{-u_s(x) + \hat f_s}}
-\end{equation}
-
-Definition 2: $M_{ij}$ is the average probability of state $i$ for all configurations sampled at state $j$:
-\begin{equation*}
-M_{ij} = \langle p_i \rangle_j \approx \frac{1}{n_j} \sum_{k=1}^{n_j} p_i(x_{jk})
-\end{equation*}
-
-Therefore, $\vt M$ is a stochastic matrix and, consequently, the Perron-Frobenius theorem applies. GMBAR in matrix notation:
-\begin{equation*}
-\mt M \vt \pi = \vt \pi
-\end{equation*}
-
-Thus, we have to look for a matrix $\mt M$ whose limiting distribution is $\vt \pi$.
-
-\subsection{Maximum Quasi-Likelihood Derivation}
-
-
 \section{Results}
 
-\subsection{Solvation of Propane in Water}
+\subsection{Propane Solvation in Water}
 
 In order to compare the proposed method against MBAR in regard to the calculation of relative free energies of sampled states, we simulated the infinite-dilution solvation of propane in water. Both molecules are modeled as rigid bodies. The intermolecular interactions between water atoms and propane pseudo-atoms are calculated by the softcore potential\cite{Beutler_1994} $\nu(r,\lambda) = 4\lambda\epsilon(s^{-2} - s^{-1})$, where $s = (r/\sigma)^6 + 0.5 (1-\lambda)$.
 
@@ -463,70 +321,6 @@ $1.0$ & $2$  &  $2.989 \pm 0.032$  &  $2.968 \pm 0.024$
 \label{fig:nelder_mead}
 \end{figure}
 
-
-\section{DRAFT}
-
-visiting other states with faster mixing will help 
-
-Based on the work of Vardi,\cite{Vardi_1985} Geyer,\cite{Geyer_1994} Meng and Wong,\cite{Meng_1996}, Kong \textit{et al}.\cite{Kong_2003}, and Tan\cite{Tan_2004}
-
-Reweighting mixture\cite{Geyer_1994}:
-\begin{equation*}
-\rho_0(x) = \frac{1}{Z_0} \sum_{i=1}^{n_0} \pi_i e^{-u_i(x) + f_i}
-\end{equation*}
-
-Since $\rho_0 = \frac{1}{Z_0} e^{-u_0}$, the equation above results in the following reduced potential
-\begin{equation}
-\label{eq:mbar_reduced_potential}
-u_0(x) = -\ln \sum_{i=1}^m \pi_i e^{-u_i(x) + f_i}
-\end{equation}
-
-
-
-
-
-The probability density $\rho_i(x)$ can be interpreted as a conditional probability of configuration $x$ given state $i$, i.e. $\rho_i(x) = p(x|i)$. We can join all configurations sampled in states $1$ to $m$ together as if they were sampled from a single state $0$. In this case, $n_0 = \sum_{k=1}^m n_k$. Let us assume the prior probability that a configuration comes from state $i$ as being $p(i) = n_i/n_0$. In this case, the Bayes theorem yields
-\begin{equation*}
-p(x|i) p(i) = p(i|x) p(x)
-\end{equation*}
-
-\begin{equation*}
-p_i \rho_i(x) = p(i|x) \rho_0(x)
-\end{equation*}
-
-\begin{equation}
-\label{eq:mbar_probability_density}
-\rho_0(x) = \sum_{i=1}^m p_i \rho_i(x) = \frac{1}{Z_0} \sum_{i=1}^m p_i e^{-u_i(x) + f_i}
-\end{equation}
-
-Since $\rho_0 = \frac{1}{Z_0} e^{-u_0}$, the equation above results in the following reduced potential
-\begin{equation}
-\label{eq:mbar_reduced_potential}
-u_0(x) = -\ln \sum_{i=1}^m p_i e^{-u_i(x) + f_i}
-\end{equation}
-
-From Eqs.~\eqref{eq:nbs_sampling_free_energy} and \eqref{eq:average_estimator},
-\begin{equation*}
-f_i = -\ln \sum_{k=1}^{n_0} \frac{e^{-u_i(x_k)}}{\sum_{j=1}^m n_j e^{-u_j(x_k) + f_j}}
-\end{equation*}
-
-An average in the reference state can be rewritten as
-\begin{equation}
-\label{eq:average_reference_state}
-\langle A \rangle_0 = \sum_{i=1}^m p_i \langle A \rangle_i
-\end{equation}
-
-Therefore,
-\begin{equation*}
-\label{eq:mbar_free_energy_difference}
-\Delta f_{ij} = - \ln \frac{\sum_{k=1}^m p_k \langle e^{-w_j} \rangle_k}{\sum_{k=1}^m p_k \langle e^{-w_i} \rangle_k}.
-\end{equation*}
-
-The delta method:
-\begin{align*}
-\sigma^2_{\Delta \hat f_{ij}} &= \frac{1}{e^{-\Delta f_{ij}}} \sum_{k=1}^m \Bigg[ \left(\frac{p_k}{\sum_{l=1}^m p_l \langle e^{-w_i} \rangle_l } \right)^2 \sigma^2_{\langle e^{-w_j} \rangle_k} \\
-&+ \left( \frac{\sum_{l=1}^m p_l \langle e^{-w_j} \rangle_l}{(\sum_{l=1}^m p_l \langle e^{-w_i} \rangle_l)^2}\right)^2 p_k^2 \sigma^2_{\langle e^{-w_i} \rangle_k} \Bigg]
-\end{align*}
 
 \section{Conclusion}
 
@@ -572,6 +366,6 @@ However, a better estimator can be obtained by combining Eqs.~\eqref{eq:nbs samp
 Both estimators neglect the detailed association of configurations to states. This is due to an essential feature of importance sampling, in that every sampled configuration contributes equally to an ensemble average. During the simulation of a complex system, it is a common practice to store only a small set of collective properties for posterior analysis. In this case, if the second estimator is to be used, one must ensure that such set includes all the potentials present in Eq.~\eqref{eq:expanded ensemble FEP estimator} or other properties from which they can be computed afterwards. Finally, we remark that the set of weighting factors is often chosen so that all states are visited with equal frequency. For this to occur, we must impose that $\eta_i = f_i - \ln m$, which can only be achieved iteratively. Other strategies have also been proposed to select suitable weighting factors or reduced potentials that improve performance and avoid ergodicity issues. Details can be found in Refs.~\onlinecite{Katzgraber_2006, Trebst_2006, Escobedo_2007, *Escobedo_2008, *Martinez_2008}.
 
 
-\bibliography{gmbar}
+\bibliography{mblock}
 
 \end{document}
