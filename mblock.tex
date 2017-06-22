@@ -37,7 +37,7 @@ We agree with Shirts\cite{Shirts_2017} in that the density and mathematical comp
 \subsection{Importance Sampling}
 \label{sec:definitions}
 
-Consider that $x$ represents the set of coordinates of a system that can be found at different equilibrium states. Each state $i$ is a statistical ensemble distinguished by a probability density
+Let $x$ represent the set of coordinates of a system that can be found at different equilibrium states. Each state $i$ is a statistical ensemble whose probability density is
 \begin{equation}
 \label{eq:state_prob_density}
 \rho_i(x) = \frac{1}{Z_i} e^{-u_i(x)},
@@ -65,13 +65,12 @@ where $\nabla$ is the gradient operator. From the central limit theorem (CLT) fo
 \hat{\mt \Sigma}^\text{iid}_{\overline{\vt y}_i\overline{\vt z}_i} = \frac{\sum\limits_{k=1}^{n_i} \left[\vt y(x_{i,k}) - \overline{\vt y}_i\right] \tr{\left[\vt z(x_{i,k}) - \overline{\vt z}_i\right]}}{n_i(n_i - 1)}.
 \end{equation*}
 
-This is not true if the sample generated at state $i$ is a correlated time series. Several methods have been developed for estimating univariate asymptotic variances, which include batching, spectral analysis, and regenerative simulations.\cite{Geyer_1992, Alexopoulos_2006, Flegal_2010, Doss_2014} Extensions to the computation of covariance matrices have also been validated.\cite{Vats_2015, Vats_2017} Spectral methods usually perform better than batching,\cite{Flegal_2010} but they are less simple and more computationally demanding, especially in the multivariate case.\cite{Vats_2015} In this context, the overlapping batch-mean (OBM) estimator\cite{Meketon_1984} is particularly appealing for being asymptotically equivalent to a spectral method while still very simple to implement. For sample $S_i$, it consists in defining $n_i-b_i+1$ overlapping blocks of size $b_i$, where each block $j$ is the set of consecutive configurations starting at $x_{i,j}$. The average of $\vt y(x)$ is then computed recursively for every block by
-\begin{align*}
-&{\overline{\vt y}}^b_{i,1} = \frac{1}{b_i} \sum_{k=1}^{b_i} \vt y(x_{i,k}) \quad \text{and} \\
-&{\overline{\vt y}}^b_{i,j+1} = {\overline{\vt y}}^b_{i,j} + \frac{\vt y(x_{i,j+b_i}) - \vt y(x_{i,j})}{b_i}.
-\end{align*}
+This is not true if the sample generated at state $i$ is a correlated time series. Several methods exist for estimating asymptotic variances, including batching, spectral analysis, and regenerative simulations.\cite{Geyer_1992, Alexopoulos_2006, Flegal_2010, Doss_2014} Extensions to the computation of covariance matrices have also been validated.\cite{Vats_2015, Vats_2017} Spectral methods usually perform better than batching,\cite{Flegal_2010} but they are less simple and more computationally demanding, especially in the multivariate case.\cite{Vats_2015} In this context, the overlapping batch-mean (OBM) estimator\cite{Meketon_1984} is particularly appealing for being asymptotically equivalent to a spectral method while still being very simple to implement. For a sample $S_i$, it consists in defining $n_i-b_i+1$ overlapping blocks of size $b_i$, where each block $j$ is the set of consecutive configurations from $x_{i,j}$ to $x_{i,j+b_i-1}$. The average of $\vt y(x)$ for the first block is ${\overline{\vt y}}^b_{i,1} = \frac{1}{b_i} \sum_{k=1}^{b_i} \vt y(x_{i,k})$ and, for the remaining blocks, they can be computed recursively by
+\begin{equation*}
+{\overline{\vt y}}^b_{i,j+1} = {\overline{\vt y}}^b_{i,j} + \frac{\vt y(x_{i,j+b_i}) - \vt y(x_{i,j})}{b_i}.
+\end{equation*}
 
-Finally, the OBM estimator for the asymptotic cross-covariance matrix regarding averages $\overline{\vt y}_i$ and $\overline{\vt z}_i$ is\cite{Meketon_1984}
+Then, the OBM estimator for the asymptotic cross-covariance matrix regarding averages $\overline{\vt y}_i$ and $\overline{\vt z}_i$ is\cite{Meketon_1984}
 \begin{equation}
 \label{eq:obm asymptotic covariance}
 \hat{\mt \Sigma}_{\overline{\vt y}_i\overline{\vt z}_i} = \frac{b_i \sum\limits_{j=1}^{n_i - b_i + 1} ({\overline{\vt y}}^b_{i,j} - \overline{\vt y}_i) \tr{({\overline{\vt z}}^b_{i,j} - \overline{\vt z}_i)}}{(n_i - b_i)(n_i - b_i + 1)}.
@@ -106,13 +105,14 @@ As explained above, the dominant set $D_0$ will coincide with $C_i$, thus being 
 The multicanonical approach\cite{Berg_1992, Lee_1993, Abreu_2006} and the enveloping distribution method\cite{Christ_2007, *Christ_2008, *Christ_2009} are examples of successful non-Boltzmann sampling techniques.
 
 \subsection{Expanded Ensemble}
-
-One of particular importance to the train of thought we intend to develop here is the method of \textit{expanded ensembles}.\cite{Lyubartsev_1992} It is a non-Boltzmann sampling scheme closely related to staging because it consists in combining a number $m$ of states whose individual distributions overlap. However, instead of generating independent samples, the sampling procedure includes a random walk through states. The joint probability of configurations and states is then given by\cite{Nymeyer_2010}
+\label{sec:expanded ensemble}
+	
+A method of particular importance to the train of thought we intend to develop here is known as \textit{expanded ensemble}.\cite{Lyubartsev_1992} It is a non-Boltzmann sampling scheme, but closely related to staging as it consists in combining a number $m$ of states whose distributions overlap. However, instead of sampling each state independently, we perform importance sampling from a joint probability of configurations and states given by\cite{Nymeyer_2010}
 \begin{equation}
 \label{eq:expanded ensemble joint}
 p_0(x, i) = \frac{1}{Z_0} e^{-u_i(x) + \eta_i},
 \end{equation}
-where $\eta_i$ is part of an arbitrary vector $\vt \eta$ of weighting factors. Once $\vt \eta$ is defined, there are several ways of performing importance sampling from $p_0(x,i)$, which will result in a sample $S = \{x_k,i_k\}_{k=1}^n$, with each configuration bearing a state-indicating label. For completeness, in Appendix \ref{sec:expanded ensemble simulation} we describe, in brief, some common sampling schemes. From Eq.~\eqref{eq:expanded ensemble joint}, one can derive the marginal probability of each state $i$, defined as $\pi_i = \int p_0(x,i)dx$, as well as the marginal probability density at state~$0$, defined as $\rho_0(x) = \sum_{i=1}^m p_0(x,i)$. One can also obtain the conditional probabilities $p(i|x)$ and $p(x|i)$ via Bayes' theorem, $p_0(x,i) = p(x|i) \pi_i = p(i|x) \rho_0(x)$. Hence,
+where $\vt \eta$ is a vector of arbitrary weighting factors. This results in a sample $S = \{x_k,i_k\}_{k=1}^n$, where each configuration bears a state-indicating label. For completeness, we describe some ways of performing such sampling in Appendix \ref{sec:expanded ensemble simulation}. From Eq.~\eqref{eq:expanded ensemble joint}, one can derive the marginal probability of each state $i$, defined as $\pi_i = \int p_0(x,i)dx$, as well as the marginal probability density at state~$0$, defined as $\rho_0(x) = \sum_{i=1}^m p_0(x,i)$. One can also obtain the conditional probabilities $p(i|x)$ and $p(x|i)$ via Bayes' theorem, $p_0(x,i) = p(x|i) \pi_i = p(i|x) \rho_0(x)$. Hence,
 \begin{subequations}
 \label{eq:expanded ensemble probabilities}
 \begin{gather}
@@ -129,75 +129,42 @@ The fact that $p(x|i) = \rho_i(x)$ demonstrates that each individual state is sa
 \hat f_i = \eta_i - \ln \frac{n_i}{n}.
 \end{equation}
 
-However, we can derive a much better estimator once we realize that $\pi_i = \int \rho_0(x) p(i|x) dx$, meaning that $\pi_i$ is the ensemble average of the marginal probability $p(i|x)$ at state $0$. The new estimator simply comes from using Eq.~\eqref{eq:average_estimator} to estimate such an average. It is
+However, we can derive a much better estimator\cite{Ding_2017} once we realize that $\pi_i = \int \rho_0(x) p(i|x) dx$, meaning that $\pi_i$ is the ensemble average of the marginal probability $p(i|x)$ at state $0$. The new estimator, which arises if we simply use Eq.~\eqref{eq:average_estimator} to estimate such an average, is
 \begin{equation}
 \label{eq:expanded ensemble FEP estimator}
 \hat f_i = -\ln \left[ \frac{1}{n}\sum_{k=1}^n \frac{e^{-u_i(x_k)}}{\sum_{j=1}^m e^{-u_j(x_k) + \eta_j}} \right].
 \end{equation}
 
-Note that the state-indicating labels in $S$ are neglected in both estimators, due to an essential feature of importance sampling in that every sampled configuration contributes equally to an ensemble average. In addition, we remark that the set of weighting factors is often chosen so that all states are visited with equal frequency. For this to occur, we must impose that $\eta_i = f_i - \ln m$, which can only be achieved iteratively. Other strategies have also been proposed to select suitable weighting factors or reduced potentials that improve performance and avoid ergodicity issues. Details can be found in Refs.~\onlinecite{Katzgraber_2006, *Trebst_2006, Escobedo_2007, *Escobedo_2008, *Martinez_2008}.
+Note that the state-indicating labels in $S$ are neglected in both estimators, due to an essential feature of importance sampling in that every sampled configuration contributes equally to an ensemble average. In practice, the set of weighting factors is often chosen so that all states are visited with equal frequency. This requires that $\eta_i = f_i - \ln m$, which can only be achieved iteratively. Other strategies have also been proposed to select suitable weighting factors or reduced potentials that improve performance and avoid ergodicity issues. Details can be found in Refs.~\onlinecite{Katzgraber_2006, *Trebst_2006, Escobedo_2007, *Escobedo_2008, *Martinez_2008}.
 
-Finally, we can combine the results in Eq.~\eqref{eq:expanded ensemble probabilities} in order to show that
+Finally, we can combine the results in Eq.~\eqref{eq:expanded ensemble probabilities} in order to show that an expanded ensemble distribution is actually a \textit{mixture model}\cite{Lindsay_1995, Marin_2005} composed of the distributions corresponding to the $m$ states, that is,
 \begin{equation}
 \label{eq:mixture ensemble}
-\rho_0(x) = \sum_{i=1}^m \pi_i \rho_i(x),
+\rho_0(x) = \sum_{i=1}^m \pi_i \rho_i(x).
 \end{equation}
-meaning that an expanded ensemble distribution is actually a \textit{mixture model}\cite{Lindsay_1995, Marin_2005} composed of the distributions corresponding to the $m$ states. In this context, the vector $\vt \pi$ of state probabilities can be referred to as the mixture composition. In addition, since $\rho_0 = \frac{1}{Z_0}e^{-u_0}$, we can resort to Eq.~\eqref{eq:state_prob_density_Z0} for expressing the reduced potential of the mixture state as
+
+In this context, the vector $\vt \pi$ of state probabilities can be regarded as the mixture composition. Moreover, since $\rho_0 = \frac{1}{Z_0}e^{-u_0}$, we can resort to Eq.~\eqref{eq:state_prob_density_Z0} for expressing the reduced potential of the mixture state as
 \begin{equation}
 \label{eq:mixture potential}
 u_0(x) = -\ln \sum_{i=1}^m \pi_i e^{-u_i(x) + f_i}.
 \end{equation}
 
-With $\vt f$ replaced by its estimator $\hat{\vt f}$, this potential can be employed together with Eqs.~\eqref{eq:nbs sampling free energy} and \eqref{eq:nbs sampling reweighting} to estimate relative free energies and other ensemble averages at any state $i$ whose set $C_i$ is a subset of $C_0$, whether such state is part of the expanded ensemble ($1 \le i \le m$) or not.
+With $\vt f$ replaced by its estimator $\hat{\vt f}$, this potential can be employed with Eqs.~\eqref{eq:nbs sampling free energy} and \eqref{eq:nbs sampling reweighting} to estimate relative free energies (i.e. FEP) and other ensemble averages (i.e. reweighting) at any state whose set $C$ is a subset of $C_0$, whether such state is part of the expanded ensemble mixture or not.
 
 \subsection{Multistate Bennett Acceptance Ratio}
 
-An interesting feature of the method of expanded ensembles is that the walk through the multiple states favors ergodicity in each state, as compared to sampling each one individually. Nevertheless, the process of determining convenient states and weights can be tedious and time-consuming. It is more likely that we face the situation described in Sec.~\ref{sec:definitions}, when samples individually drawn at different states are available. An advantage of this scenario is that inclusion of new states, if necessary, is straightforward. In this case, the pooled sample can be expressed as
-\begin{equation}
-\label{eq:pooled sample}
-\mathcal S = \Big\{\{x_{i,k}\}_{k=1}^{n_i}\Big\}_{i=1}^m.
-\end{equation}
-
-Shirts and Chodera\cite{Shirts_2008} described a method for computing relative free energies and their uncertainties by using all configurations in $\mathcal S$, provided that each sample is composed of independent and identically distributed (iid) configurations. The authors named the method as Multistate Bennet Acceptance Ratio (MBAR) because it is equivalent to BAR when only two states are involved. Let us derive their estimator from a simple argument before embarking in a detailed analysis. MBAR consists in assigning the same importance to every configuration, regardless of which state it comes from. We can thus overlook the subset structure of Eq.~\eqref{eq:pooled sample} and write $\mathcal S = \{x_k\}_{k=1}^n$. This is equivalent to viewing $\mathcal S$ as the outcome of an expanded ensemble simulation whose weighting factors are unknown and must be estimated as well as the relative free energies. For this reason, we are compelled to use both estimators in Eqs.~\eqref{eq:expanded ensemble histogram estimator} and \eqref{eq:expanded ensemble FEP estimator}, rather than choosing one of them. A combination of these estimators yield
+An interesting feature of an expanded ensemble is that the walk throughout states favors ergodicity, as compared to sampling each state individually. Nonetheless, the process of determining convenient states and weights can be tedious and time-consuming. It is thus more likely that we face the situation described in Sec.~\ref{sec:definitions}, when samples individually drawn at different states are available. An advantage of this scenario is that inclusion of new states, if necessary, is straightforward. In this case, the pooled sample can be expressed as $\mathcal S = \big\{\{x_{i,k}\}_{k=1}^{n_i} \big\}_{i=1}^m$. Shirts and Chodera\cite{Shirts_2008} described a method for computing relative free energies and their uncertainties by using all configurations in $\mathcal S$, provided that each sample is composed of independent and identically distributed (iid) configurations. The authors named the method as Multistate Bennet Acceptance Ratio (MBAR) because it is equivalent to BAR when only two states are involved. Let us derive their estimator from a simple argument before embarking in a detailed analysis. MBAR consists in assigning the same importance to every configuration, regardless of which state it comes from. This makes $\mathcal S$ equivalent to the outcome of an expanded ensemble, so that we can overlook its subset structure and write $\mathcal S = \{x_k\}_{k=1}^n$. The issue of not knowing the weighting factors of this expanded ensemble is easily tackled by combining the two estimators of Eqs.~\eqref{eq:expanded ensemble histogram estimator} and \eqref{eq:expanded ensemble FEP estimator}. This yields
 \begin{equation}
 \label{eq:mbar free energy estimator}
 \hat f_i = -\ln \sum_{k=1}^n \frac{e^{-u_i(x_k)}}{\sum_{j=1}^m n_j e^{-u_j(x_k) + \hat f_j}},
 \end{equation}
-which is equivalent to Eq.~11 of Ref.~\onlinecite{Shirts_2008}. Note that this is not an isolated estimator, but a self-consistent system of equations whose solution provides the whole vector $\hat {\vt f}$. In fact, because the solution can only be determined up to an additive constant, one can fix $\hat f_1$ and solve the remaining equations in order to obtain $\hat{\vt f}_{2:m}$. Once the solution has been found, we can estimate the potential $u_0$ via Eq.~\eqref{eq:mixture potential} and then employ Eqs.~\eqref{eq:nbs sampling free energy} and \eqref{eq:nbs sampling reweighting} to carry out FEP and/or reweighting from the mixture to individual states (either sampled or unsampled ones).\cite{Geyer_1994, Shirts_2017}
+which is equivalent to Eq.~11 of Ref.~\onlinecite{Shirts_2008}. This is not an isolated estimator, but a self-consistent system of equations whose solution provides the whole vector $\hat {\vt f}$. In fact, because the solution can only be determined up to an additive constant, one can fix $\hat f_1$ and solve the remaining equations in order to obtain $\hat{\vt f}_{2:m}$. After that, we can use $\hat{\vt f}$ to perform FEP and reweighting calculations exactly as described in Sec.~\ref{sec:expanded ensemble}.\cite{Geyer_1994, Shirts_2017}
 
-As the $m$ samples in $\mathcal S$ are generated independently, giving all configurations the same importance seems unsuitable if these samples exhibit correlation and distinct mixing times. This is one reason why MBAR is meant to deal with iid samples and requires subsampling whenever some sample is originally correlated.\cite{Shirts_2008} For a series $\{x_{i,k}\}_{k=1}^{n_i}$ drawn at state $i$, the subsampling interval is set as the statistical inefficiency of some configurational property $A(x)$, which is computed as\cite{Chodera_2007}
-\begin{equation}
-\label{eq:statistical inefficiency}
-g_i = 1 + 2 \sum\limits_{t=1}^{n_i-1} \frac{n_i - t}{n_i} \gamma_i(t),
-\end{equation}
-where $\gamma_i(t)$ is the normalized autocorrelation function of $A$, calculated by
-\begin{equation*}
-\gamma_i(t) = \frac{\dfrac{1}{n_i - t} \sum\limits_{k=1}^{n_i-t} \left[A(x_{i,k}) - \overline A_i\right]\left[A(x_{i,k+t}) - \overline A_i\right]}{\dfrac{1}{n_i} \sum\limits_{k=1}^{n_i} \left[A(x_{i,k}) - \overline A_i\right]^2}.
-\end{equation*}
-
-The autocorrelation function $\gamma_i(t)$ is expected to asymptotically decay to zero for most properties, but in practice its tail fluctuates around zero. Chodera \textit{et al}.\cite{Chodera_2007} proposed that the sum in Eq.~\eqref{eq:statistical inefficiency} should be truncated right before $\gamma_i(t)$ crosses zero for the first time, arguing that the function becomes statistically indistinguishable from zero at this point.
-
-
-
-
-Another important reason why MBAR requires uncorrelated data is concerned with the determination of uncertainties. The MBAR estimator had previously appeared in the literature under other denominations such as Biased Sampling,\cite{Vardi_1985, *Gill_1988} Reverse Logistic Regression,\cite{Geyer_1994} and Extended Bridge Sampling.\cite{Meng_1996, Kong_2003, Tan_2004} It has been derived in several ways from the principle of maximum likelihood, which can lead to standardized proofs of CLT's, thus providing reliable estimates of asymptotic covariance matrices.\cite{Pawitan_2001, Greene_2012} These proofs, however, usually follow from the premise that iid samples are available. Shirts and Chodera\cite{Shirts_2008} established MBAR from a more general version of Eq.~\eqref{eq:mbar free energy estimator}, put forward by Kong \textit{et al}.,\cite{Kong_2003} in which a function $q_i(x)$ and a constant $\hat c_i$ replace the terms $e^{-u_i(x)}$ and $e^{-\hat f_i}$, respectively. It is
-\begin{equation}
-\label{eq:mbar general estimator}
-{\hat c}_i = \sum_{k=1}^n \frac{q_i(x_k)}{\sum_{j=1}^m n_j q_j(x_k) c_j^{-1}}.
-\end{equation}
-
-This opens up the possibility of releasing some function $q_i(x)$ from being strictly non-negative, provided that $n_i = 0$ because it would not be an actual probability density. Kong \textit{et al}.\cite{Kong_2003} also developed an expression, valid for iid samples, for estimating a matrix whose each element $\hat \Theta_{i,j}$ is the asymptotic covariance between $\ln \hat c_i$ and $\ln \hat c_j$ obtained after solving the estimating equations self-consistently. Such expression is
-\begin{equation}
-\label{eq:mbar covariance matrix}
-\hat{\mt \Theta} = \tr{\mt W} (\mt I - {\mt W}{\mt N}\tr{\mt W})^\dag {\mt W},
-\end{equation}
-where $\mt W$ is an $n \times m$ matrix with $W_{k,i} = \frac{q_i(x_k) \hat c_i^{-1}}{\sum_{j=1}^m n_j q_j(x_k) \hat c_j^{-1}}$, $\mt I$ is the $n \times n$ identity matrix, and $\mt N = \text{diag}(\vt n)$, where $\text{diag}(\cdot)$ returns a diagonal matrix built from the entries of a vector. The superscript $\dag$ denotes a Moore-Penrose pseudoinverse, required because the expression in parentheses produces a singular matrix. In fact, this can possibly be a very large matrix, but this might not become an unsurmountable issue in most cases (see Ref.~\onlinecite{Shirts_2008} for details). From the covariance matrix we can obtain, via the delta method, the square-error $\delta^2 h$ of any property $h$ that depends analytically on the set $\{\ln c_i\}_{i=1}^m$.
-
-MBAR is also suitable for computing, via reweighting, ensemble averages and functions thereof (which includes relative free-energies), as well as their uncertainties, at both sampled states and unsampled ones. In a comment attached to Ref.~\onlinecite{Kong_2003}, Doss suggested a way of exploiting the flexibility of the $q$-functions in Eqs.~\eqref{eq:mbar general estimator} and \eqref{eq:mbar covariance matrix} in order to compute a property and its uncertainty at an unsampled state $m+1$, for which $q_{m+1}(x) = e^{u_{m+1}(x)}$. It consists in setting, in addition, a fictitious state $m+2$ for which $q_{m+2}(x) = A(x)e^{u_{m+1}(x)}$. In this way, Eq.~\eqref{eq:mbar general estimator} can be used to compute $c_{m+1}$ and $c_{m+2}$, from which one gets both $\hat f_{m+1} = -\ln c_{m+1}$ and $\bar A = {c_{m+2}}/{c_{m+1}}$. Because $n_{m+1} = n_{m+2} = 0$, such computation does not require iterations in case the $c$-constants of the sampled states have already been determined. The square-errors $\delta^2 \hat f_{m+1}$ and $\delta^2 \overline A$ then follow directly from Eq.~\eqref{eq:mbar covariance matrix} and the delta method, Eq.~\eqref{eq:delta method}.
-
-The requirement of subsampling often causes MBAR to waste a considerable amount of data. Even though the discarded configurations carry less information than do the ones that remain, they could possibly have a positive impact on the quality of a statistical analysis. In what follows, we develop an unwasteful extension of MBAR, which allows one to use all available data even if individual samples exhibit distinct mixing times.
+As the $m$ samples in $\mathcal S$ are generated independently, giving all configurations the same importance seems unsuitable if these samples exhibit correlation and distinct mixing times. This is one reason why MBAR is meant to deal with iid samples and requires subsampling whenever some sample is originally correlated.\cite{Shirts_2008} Another important reason is concerned with the determination of uncertainties. The MBAR estimator had previously appeared in the literature under other denominations such as Biased Sampling,\cite{Vardi_1985, *Gill_1988} Reverse Logistic Regression,\cite{Geyer_1994} and Extended Bridge Sampling.\cite{Meng_1996, Kong_2003, Tan_2004} It has been derived in several ways from the principle of maximum likelihood, which can lead to standardized proofs of CLT's, thus providing reliable estimates of asymptotic covariance matrices.\cite{Pawitan_2001, Greene_2012} These proofs, however, usually follow from the premise that iid samples are available.
 
 \section{Taking Full Advantage of Correlated Datasets from Multiple States}
+
+The requirement of subsampling often causes MBAR to waste a considerable amount of data. Even though the discarded configurations carry less information than do the ones that remain, they could possibly have a positive impact on the quality of a statistical analysis. In what follows, we develop an unwasteful extension of MBAR, which allows one to use all available data even if individual samples exhibit distinct mixing times.
 
 \subsection{Relative Free Energies of Sampled States}
 
@@ -405,6 +372,34 @@ However, a better estimator can be obtained by combining Eqs.~\eqref{eq:nbs samp
 
 Both estimators neglect the detailed association of configurations to states. This is due to an essential feature of importance sampling, in that every sampled configuration contributes equally to an ensemble average. During the simulation of a complex system, it is a common practice to store only a small set of collective properties for posterior analysis. In this case, if the second estimator is to be used, one must ensure that such set includes all the potentials present in Eq.~\eqref{eq:expanded ensemble FEP estimator} or other properties from which they can be computed afterwards. Finally, we remark that the set of weighting factors is often chosen so that all states are visited with equal frequency. For this to occur, we must impose that $\eta_i = f_i - \ln m$, which can only be achieved iteratively. Other strategies have also been proposed to select suitable weighting factors or reduced potentials that improve performance and avoid ergodicity issues. Details can be found in Refs.~\onlinecite{Katzgraber_2006, *Trebst_2006, Escobedo_2007, *Escobedo_2008, *Martinez_2008}.
 
+\section{More about MBAR}
+
+For a series $\{x_{i,k}\}_{k=1}^{n_i}$ drawn at state $i$, the subsampling interval is set as the statistical inefficiency of some configurational property $A(x)$, which is computed as\cite{Chodera_2007}
+\begin{equation}
+\label{eq:statistical inefficiency}
+g_i = 1 + 2 \sum\limits_{t=1}^{n_i-1} \frac{n_i - t}{n_i} \gamma_i(t),
+\end{equation}
+where $\gamma_i(t)$ is the normalized autocorrelation function of $A$, calculated by
+\begin{equation*}
+\gamma_i(t) = \frac{\dfrac{1}{n_i - t} \sum\limits_{k=1}^{n_i-t} \left[A(x_{i,k}) - \overline A_i\right]\left[A(x_{i,k+t}) - \overline A_i\right]}{\dfrac{1}{n_i} \sum\limits_{k=1}^{n_i} \left[A(x_{i,k}) - \overline A_i\right]^2}.
+\end{equation*}
+
+The autocorrelation function $\gamma_i(t)$ is expected to asymptotically decay to zero for most properties, but in practice its tail fluctuates around zero. Chodera \textit{et al}.\cite{Chodera_2007} proposed that the sum in Eq.~\eqref{eq:statistical inefficiency} should be truncated right before $\gamma_i(t)$ crosses zero for the first time, arguing that the function becomes statistically indistinguishable from zero at this point.
+
+Shirts and Chodera\cite{Shirts_2008} established MBAR from a more general version of Eq.~\eqref{eq:mbar free energy estimator}, put forward by Kong \textit{et al}.,\cite{Kong_2003} in which a function $q_i(x)$ and a constant $\hat c_i$ replace the terms $e^{-u_i(x)}$ and $e^{-\hat f_i}$, respectively. It is
+\begin{equation}
+\label{eq:mbar general estimator}
+{\hat c}_i = \sum_{k=1}^n \frac{q_i(x_k)}{\sum_{j=1}^m n_j q_j(x_k) c_j^{-1}}.
+\end{equation}
+ 
+This opens up the possibility of releasing some function $q_i(x)$ from being strictly non-negative, provided that $n_i = 0$ because it would not be an actual probability density. Kong \textit{et al}.\cite{Kong_2003} also developed an expression, valid for iid samples, for estimating a matrix whose each element $\hat \Theta_{i,j}$ is the asymptotic covariance between $\ln \hat c_i$ and $\ln \hat c_j$ obtained after solving the estimating equations self-consistently. Such expression is
+\begin{equation}
+\label{eq:mbar covariance matrix}
+\hat{\mt \Theta} = \tr{\mt W} (\mt I - {\mt W}{\mt N}\tr{\mt W})^\dag {\mt W},
+\end{equation}
+where $\mt W$ is an $n \times m$ matrix with $W_{k,i} = \frac{q_i(x_k) \hat c_i^{-1}}{\sum_{j=1}^m n_j q_j(x_k) \hat c_j^{-1}}$, $\mt I$ is the $n \times n$ identity matrix, and $\mt N = \text{diag}(\vt n)$, where $\text{diag}(\cdot)$ returns a diagonal matrix built from the entries of a vector. The superscript $\dag$ denotes a Moore-Penrose pseudoinverse, required because the expression in parentheses produces a singular matrix. In fact, this can possibly be a very large matrix, but this might not become an unsurmountable issue in most cases (see Ref.~\onlinecite{Shirts_2008} for details). From the covariance matrix we can obtain, via the delta method, the square-error $\delta^2 h$ of any property $h$ that depends analytically on the set $\{\ln c_i\}_{i=1}^m$.
+ 
+MBAR is also suitable for computing, via reweighting, ensemble averages and functions thereof (which includes relative free-energies), as well as their uncertainties, at both sampled states and unsampled ones. In a comment attached to Ref.~\onlinecite{Kong_2003}, Doss suggested a way of exploiting the flexibility of the $q$-functions in Eqs.~\eqref{eq:mbar general estimator} and \eqref{eq:mbar covariance matrix} in order to compute a property and its uncertainty at an unsampled state $m+1$, for which $q_{m+1}(x) = e^{u_{m+1}(x)}$. It consists in setting, in addition, a fictitious state $m+2$ for which $q_{m+2}(x) = A(x)e^{u_{m+1}(x)}$. In this way, Eq.~\eqref{eq:mbar general estimator} can be used to compute $c_{m+1}$ and $c_{m+2}$, from which one gets both $\hat f_{m+1} = -\ln c_{m+1}$ and $\bar A = {c_{m+2}}/{c_{m+1}}$. Because $n_{m+1} = n_{m+2} = 0$, such computation does not require iterations in case the $c$-constants of the sampled states have already been determined. The square-errors $\delta^2 \hat f_{m+1}$ and $\delta^2 \overline A$ then follow directly from Eq.~\eqref{eq:mbar covariance matrix} and the delta method, Eq.~\eqref{eq:delta method}.
 
 \bibliography{mblock}
 
