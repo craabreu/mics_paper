@@ -11,7 +11,7 @@
 
 \begin{document}
 
-\title{Free Energy Computation and Property Reweighting From Multiple Autocorrelated Datasets}
+\title{Free Energy Computation and Thermodynamic Property Reweighting From Multiple Autocorrelated Datasets}
 
 \author{Charlles R. A. Abreu}
 \email{abreu@eq.ufrj.br}
@@ -54,15 +54,15 @@ Assume that a sample of configurations $S_i = \{x_{i,k}\}_{k=1}^{n_i}$ was obtai
 \overline A_i = \frac{1}{n_i} \sum_{k=1}^{n_i} A(x_{i,k}).
 \end{equation}
 
-This estimator naturally extends to multivalued properties, such as vectors and matrices, and is valid whether the configurations in $S_i$ are independent and identically distributed (iid) or form a correlated time series. The difference resides in how to estimate the uncertainty of an average $\overline A_i$ or, more generally, of a function $h(\overline {\vt y}_i)$, where $\vt y(x)$ is a vector of configurational properties $\tr{[A(x) \; B(x) \; \cdots]}$. If we define $\hat{\mt \Sigma}_{\overline{\vt y}_i\overline{\vt y}_i}$ as the matrix of estimated asymptotic covariances between the entries of $\overline{\vt y}_i$, then a squared-error like $\delta^2 \overline A_i$ can be taken as the corresponding main-diagonal entry of $\hat{\mt \Sigma}_{\overline{\vt y}_i\overline{\vt y}_i}$. In the case of $h(\overline{\vt y}_i)$, the squared-error $\delta^2 h$ might be computed by the delta method,\cite{Greene_2012} from which
+This estimator naturally extends to multivalued properties, such as vectors and matrices. It is valid whether the configurations in $S_i$ are independent and identically distributed (i.i.d.) or form a correlated time series. The difference resides in how to estimate the uncertainty of an average $\overline A_i$ or, more generally, of a function $h(\overline {\vt y}_i)$, where $\vt y(x)$ is a vector of configurational properties $\tr{[A(x) \; B(x) \; \cdots]}$. If we define $\hat{\mt \Sigma}_{\overline{\vt y}_i}$ as the matrix of estimated asymptotic covariances between the entries of $\overline{\vt y}_i$, then the mean square error $\delta^2 \overline A_i$ can be taken as the corresponding main-diagonal entry of $\hat{\mt \Sigma}_{\overline{\vt y}_i}$. In the case of $h(\overline{\vt y}_i)$, the mean square error $\delta^2 h$ might be computed via the delta method,\cite{Greene_2012} from which
 \begin{equation}
 \label{eq:delta method}
-\delta^2 h = \tr{(\nabla_{\overline{\vt y}_i} h)} \hat{\mt \Sigma}_{\overline{\vt y}_i\overline{\vt y}_i}(\nabla_{\overline{\vt y}_i} h),
+\delta^2 h = \tr{(\nabla_{\overline{\vt y}_i} h)} \hat{\mt \Sigma}_{\overline{\vt y}_i}(\nabla_{\overline{\vt y}_i} h),
 \end{equation} 
-where $\nabla$ is the gradient operator. From the central limit theorem (CLT) for an iid sample, the asymptotic cross-covariance matrix between averages $\overline{\vt y}_i$ and $\overline{\vt z}_i$ can be estimated by
+where $\nabla$ is the gradient operator. From the central limit theorem (CLT) applied to an i.i.d. sample, the asymptotic covariance matrix of $\overline{\vt y}_i$ can be estimated by
 \begin{equation*}
 \label{eq:asymptotic covariance IID}
-\hat{\mt \Sigma}^\ast_{\overline{\vt y}_i\overline{\vt z}_i} = \frac{\sum\limits_{k=1}^{n_i} \left[\vt y(x_{i,k}) - \overline{\vt y}_i\right] \tr{\left[\vt z(x_{i,k}) - \overline{\vt z}_i\right]}}{n_i(n_i - 1)}.
+\hat{\mt \Sigma}^\ast_{\overline{\vt y}_i} = \frac{\sum\limits_{k=1}^{n_i} \left[\vt y(x_{i,k}) - \overline{\vt y}_i\right] \tr{\left[\vt y(x_{i,k}) - \overline{\vt y}_i\right]}}{n_i(n_i - 1)}.
 \end{equation*}
 
 This is not true if the sample generated at state $i$ is a correlated time series. Several methods exist for estimating asymptotic variances in this case, such as batching, spectral analysis, and regenerative simulations.\cite{Geyer_1992, Alexopoulos_2006, Flegal_2010, Doss_2014} Extensions to the computation of covariance matrices have also been validated.\cite{Vats_2015, Vats_2017} Spectral methods usually perform better than batching,\cite{Flegal_2010} but they are less simple and more computationally demanding, especially in the multivariate case.\cite{Vats_2015} In this context, the overlapping batch-mean (OBM) estimator\cite{Meketon_1984} is particularly appealing for being asymptotically equivalent to a spectral method while still being very simple to implement. For a sample $S_i$, it consists in defining $n_i-b_i+1$ overlapping blocks of size $b_i$, where each block $j$ is the set of consecutive configurations from $x_{i,j}$ to $x_{i,j+b_i-1}$. The average of $\vt y(x)$ for the first block is ${\overline{\vt y}}^b_{i,1} = \frac{1}{b_i} \sum_{k=1}^{b_i} \vt y(x_{i,k})$ and, for the remaining blocks, they can be computed recursively by
@@ -70,15 +70,16 @@ This is not true if the sample generated at state $i$ is a correlated time serie
 {\overline{\vt y}}^b_{i,j+1} = {\overline{\vt y}}^b_{i,j} + \frac{\vt y(x_{i,j+b_i}) - \vt y(x_{i,j})}{b_i}.
 \end{equation*}
 
-Then, the OBM estimator for the asymptotic cross-covariance matrix regarding averages $\overline{\vt y}_i$ and $\overline{\vt z}_i$ is\cite{Meketon_1984}
+Then, the OBM estimator for the asymptotic covariance matrix regarding the entries of $\overline{\vt y}_i$ is\cite{Meketon_1984}
 \begin{equation}
 \label{eq:obm asymptotic covariance}
-\hat{\mt \Sigma}_{\overline{\vt y}_i\overline{\vt z}_i} = \frac{b_i \sum\limits_{j=1}^{n_i - b_i + 1} ({\overline{\vt y}}^b_{i,j} - \overline{\vt y}_i) \tr{({\overline{\vt z}}^b_{i,j} - \overline{\vt z}_i)}}{(n_i - b_i)(n_i - b_i + 1)}.
+\hat{\mt \Sigma}_{\overline{\vt y}_i} = \frac{b_i \sum\limits_{j=1}^{n_i - b_i + 1} ({\overline{\vt y}}^b_{i,j} - \overline{\vt y}_i) \tr{({\overline{\vt y}}^b_{i,j} - \overline{\vt y}_i)}}{(n_i - b_i)(n_i - b_i + 1)}.
 \end{equation}
 
 An issue that remains is to determine a proper block size for each sample $S_i$. Asymptotic consistency requires that $b_i$ increases with $n_i$, and it is a common practice to make $b_i = \lfloor n_i^\nu \rfloor$ for some $0 < \nu < 1$, where $\lfloor \cdot \rfloor$ is the floor operator. Such as Flegal and Jones\cite{Flegal_2010} recommend, here we employ $\nu = 1/2$ and, therefore, $b_i = \lfloor \sqrt{n_i} \rfloor$.
 
 \subsection{Free-Energy Computation and Property Reweighting}
+\label{sec:fep and reweighting}
 
 We are often interested in the difference between the reduced free energies of two states, defined as $\Delta f_{ij} = f_j - f_i = - \ln (Z_j/Z_i)$. As it is usually unfeasible to compute absolute free energies, we find appropriate to define $f_i$ as a relative value with respect to a state~$0$, chosen as a common reference to all other states of interest, so that $f_i = -\ln (Z_i/Z_0)$. We can thus rewrite Eq.~\eqref{eq:state_prob_density} as
 \begin{equation}
@@ -93,13 +94,14 @@ By using methods such as Free Energy Perturbation (FEP),\cite{Zwanzig_1954} Simp
 Another way of tackling overlap deficiency consists in defining a reference state whose set $C_0$ is a contiguous region that encompasses all sets $C_i$ associated to a number of states of interest. Then, instead of sampling configurations at these states, we do it at state $0$, with probability density $\rho_0(x) = \frac{1}{Z_0} e^{-u_0(x)}$, and compute every $f_i$ by means of the perturbation formula
 \begin{equation}
 \label{eq:nbs sampling free energy}
-f_i = -\ln \langle e^{u_0-u_i} \rangle_0.
+f_u = -\ln \langle e^{u_0-u} \rangle_0,
 \end{equation}
+where $f_u$ is the relative free energy of a state whose probability distribution is defined by a reduced potential function $u(x)$.
 
 As explained above, the dominant set $D_0$ will coincide with $C_i$, thus being a subset of $C_0$ as desired. Torrie and Valleau\cite{Torrie_1977} pioneered this idea, known as \textit{non-Boltzmann sampling} due to the usually non-physical character of the sampled state. One is also able to compute, directly from the configurations sampled at state $0$, ensemble averages of any property $A$ at the states of interest. This procedure, known as \textit{reweighting}, is based on the identity\cite{Torrie_1977}
 \begin{equation}
 \label{eq:nbs sampling reweighting}
-\langle A \rangle_i = \frac{\langle A e^{u_0 - u_i} \rangle_0}{\langle e^{u_0 - u_i} \rangle_0} % = \langle A e^{u_0 - u_i + f_i} \rangle_0.
+\langle A \rangle_u = \frac{\langle A e^{u_0 - u} \rangle_0}{\langle e^{u_0 - u} \rangle_0}. % = \langle A e^{u_0 - u_i + f_i} \rangle_0.
 \end{equation}
 
 The multicanonical approach\cite{Berg_1992, Lee_1993, Abreu_2006} and the enveloping distribution method\cite{Christ_2007, *Christ_2008, *Christ_2009} are examples of successful non-Boltzmann sampling techniques.
@@ -176,32 +178,27 @@ The starting point of our proposal is an exact expression obtained from Eqs.~\eq
 f_i = -\ln \left\langle \frac{e^{-u_i}}{\sum_{j=1}^m \pi_j e^{-u_j + f_j}} \right\rangle_0.
 \end{equation}
 
-In MBAR, the average above is estimated by applying Eq.~\eqref{eq:average estimator} to the overall sample $\mathcal S$. This decision causes all the restraints discussed in the preceding section because all configurations in $\mathcal S$ must be identically distributed according to $\rho_0(x)$ so that both $\vt \pi$ and $\vt f$ can be properly determined. Nevertheless, one can show via Eqs.~\eqref{eq:ensemble average} and \eqref{eq:mixture ensemble} that, for a mixture model, $\langle A \rangle_0 = \sum_{i=1}^m \pi_i \langle A \rangle_i$. Therefore, one can compute an average at the mixture state from averages at the individual ones, that is,
+In MBAR, the average above is estimated by applying Eq.~\eqref{eq:average estimator} to the overall sample $\mathcal S$. Such decision is the source of all the restraints discussed in the preceding section. This is so because all configurations in $\mathcal S$ must be identically distributed according to $\rho_0(x)$ so that both $\vt \pi$ and $\vt f$ can be properly determined. Nevertheless, Eqs.~\eqref{eq:ensemble average} and \eqref{eq:mixture ensemble} show that, for a mixture model, $\langle A \rangle_0 = \sum_{i=1}^m \pi_i \langle A \rangle_i$. Therefore, one can estimate an average at the mixture state from averages at the individual ones, that is,
 \begin{equation}
 \label{eq:mixture average estimator}
 {\overline A}_0 = \sum_{i=1}^m \pi_i \overline{A}_i = \sum_{i=1}^m \frac{\pi_i}{n_i} \sum_{k=1}^m A(x_{i,k}).
 \end{equation}
 
-We will refer to this estimator as a \textit{mixture of independently collected samples} (MICS). It requires no assumption on the distribution of the pooled sample as a whole. Moreover, it is valid for any mixture composition $\vt \pi$, which can then be regarded as a set of prior probabilities (i.e. specified beforehand). This makes it easy to combine OBM-based covariance matrices like $\hat{\mt \Sigma}_{\overline{\vt y}_i \overline{\vt z}_i}$, obtained via Eq.~\eqref{eq:obm asymptotic covariance} at each state $i$, into a matrix of covariances between averages computed at the mixture state. Because $\overline{\vt y}_0 = \sum_{i=1}^m \pi_i \overline{\vt y}_i$ and each average $\overline{\vt y}_i$ is independent, the fact that each $\pi_i$ is a known constant results in
+We will refer to this estimator as a \textit{mixture of independently collected samples} (MICS). It requires no assumption on the distribution of the pooled sample. Moreover, it is valid for any mixture composition $\vt \pi$, which can then be regarded as a set of prior probabilities (i.e. specified beforehand). This makes it easy to combine OBM-based covariance matrices like $\hat{\mt \Sigma}_{\overline{\vt y}_i}$, obtained via Eq.~\eqref{eq:obm asymptotic covariance} at each state $i$, into a matrix of covariances between averages computed at the mixture state. Because $\overline{\vt y}_0 = \sum_{i=1}^m \pi_i \overline{\vt y}_i$ and each average $\overline{\vt y}_i$ is independent (i.e. covariance is null for all $j \neq i$), the fact that every $\pi_i$ is known exactly results in
 \begin{equation}
 \label{eq:mixture variance estimator}
-\hat{\mt \Sigma}_{\overline{\vt y}_0 \overline{\vt z}_0} = \sum_{i=1}^m \pi_i^2 \hat{\mt \Sigma}_{\overline{\vt y}_i \overline{\vt z}_i}.
+\hat{\mt \Sigma}_{\overline{\vt y}_0} = \sum_{i=1}^m \pi_i^2 \hat{\mt \Sigma}_{\overline{\vt y}_i}.
 \end{equation}
 
-Therefore, the choice of $\vt \pi$ is expected to affect the asymptotic behavior of the MICS estimator, which will be a topic of discussion shortly. Finally, the equation we propose for estimating the relative free energies of the sampled states, derived from applying the MICS estimator to Eq.~\eqref{eq:mixture average estimator}, is
+Of course, the choice of $\vt \pi$ is expected to affect the asymptotic behavior of the MICS estimator, and this will be a topic of discussion shortly. Finally, the equation we propose for estimating the relative free energies of the sampled states, derived from applying the MICS estimator to Eq.~\eqref{eq:mixture average estimator}, is
 \begin{equation}
 \label{eq:mblock free energy estimator}
 {\hat f}_i = -\ln \sum_{j=1}^m \frac{\pi_j}{n_j} \sum_{k=1}^{n_j} \frac{e^{-u_i(x_{j,k})}}{\sum_{s=1}^m \pi_s e^{-u_s(x_{j,k}) + {\hat f}_s}}.
 \end{equation}
 
-As with MBAR, we again have a system of equations that must be solved self-consistently after setting the value of $\hat f_1$, for instance. In contrast, however, the state at which each configuration was sampled is now a relevant information, unless we specify $\pi_j = {n_j}/{n}$ in order to recover Eq.~\eqref{eq:mbar free energy estimator}. Extending an approach pioneered by Geyer,\cite{Geyer_1994} Doss and Tan\cite{Doss_2014} proposed an equivalent estimator and investigated its asymptotic behavior when covariances at individual states are computed via regenerative simulations. In a subsequent study, Roy \textit{et al}.\cite{Roy_2018} extended their findings to the case of covariances based on non-overlapping batch-means. They were also able to soften the conditions required for proving the consistency of the estimator. Here we assume the observance of these conditions and adopt the OBM strategy described in Sec.~\ref{sec:definitions}.
+As with MBAR, we again have a system of equations that must be solved self-consistently after setting the value of $\hat f_1$, for instance. In contrast, however, the state at which each configuration was sampled is now a relevant information, unless we specify $\pi_j = {n_j}/{n}$ in order to recover Eq.~\eqref{eq:mbar free energy estimator}. Extending an approach pioneered by Geyer,\cite{Geyer_1994} Doss and Tan\cite{Doss_2014} proposed an equivalent estimator and investigated its asymptotic behavior when covariances at individual states are computed via regenerative simulations. In a subsequent study, Roy \textit{et al}.\cite{Roy_2018} extended their findings to the case of covariances based on non-overlapping batch-means. They were also able to soften the conditions required for proving the consistency of the estimator. Here we assume the observance of these conditions and adopt the OBM strategy described in Sec.~\ref{sec:definitions}. 
 
-As Roy \textit{et al}.\cite{Roy_2018} suggested, an adequate specification for the marginal probabilities $\vt \pi$ should include some definition of effective sample size.
-
-
-should instead incorporate the effective sample size of different 
-
- and our results will confirm, an adequate specification for the marginal probability of each state $i$ is
+As Roy \textit{et al}.\cite{Roy_2018} suggested, an adequate specification for the marginal probabilities $\vt \pi$ should include some definition of effective sample size. A straightforward choice is
 \begin{equation}
 \label{eq:mblock prior}
 \pi_i = \frac{n^\text{eff}_i}{\sum_{j=1}^m n^\text{eff}_j},
@@ -214,7 +211,11 @@ where $n^\text{eff}_i$ is the effective size of the sample obtained at state $i$
 %n^\text{eff}_i = n_i \bigg( \frac{\det \hat{\mt \Sigma}^\text{iid}_{\overline{\vt y}_i \overline{\vt y}_i} }{\det \hat{\mt \Sigma}_{\overline{\vt y}_i \overline{\vt y}_i} } \bigg)^{1/p}.
 %\end{equation*}
 \begin{equation*}
-n^\text{eff}_i = n_i \frac{\hat{\Sigma}_{\bar u_i \bar u_i}}{\hat{\Sigma}^\ast_{\bar u_i \bar u_i}}
+n^\text{eff}_i = n_i \left[\frac{\det(\hat{\mt \Sigma}_{\overline{\vt u}_i})}{\det(\hat{\mt \Sigma}^\ast_{\overline{\vt u}_i})}\right]^{1/m}
+\end{equation*}
+
+\begin{equation*}
+n^\text{eff}_i = n_i \frac{\hat{\Sigma}_{\overline{u_i}_i}}{\hat{\Sigma}^\ast_{\overline{u_i}_i}}
 \end{equation*}
 
 The assumption of uncorrelated blocks will be crucial for determining the asymptotic uncertainty of the free-energy estimator in Eq.~\eqref{eq:mblock free energy estimator}.
@@ -257,6 +258,7 @@ Application of Eq.~\eqref{eq:mixture average estimator} to compute both $\vt g$ 
 where $\mt A \backslash \vt b$ is the solution of linear system $\mt A \vt x = \vt b$. The log-quasi-likelihood function in Eq.~\eqref{eq:mblock log-quasi-likelihood} is concave,\cite{Doss_2014} which makes the solution above unique. In addition, according to a theorem demonstrated in Ref.~\onlinecite{Doss_2014}, $\hat{\vt f}$ is a consistent estimator, meaning that it converges to the true vector $\vt f$ when $n \rightarrow \infty$ with fixed ratios $n_i/n$ for all $i$.
 
 \subsection{Uncertainties of Free-Energy Differences}
+\label{sec:uncertainties of free-energy differences}
 
 The free-energy difference between two sampled states $i$ and $j$ can be estimated by $\Delta \hat f_{i,j} = \hat f_j - \hat f_i$. The square-error 
 
@@ -267,13 +269,207 @@ Hence, we can deduce from the delta method, Eq.~\eqref{eq:delta method}, that
 where $\hat \Theta_{i,j}$ is the estimated asymptotic covariance between $\hat f_i$ and $\hat f_j$. In accordance with proofs provided in Refs.~\onlinecite{Geyer_1994} and \onlinecite{Doss_2014}, a formula that can be used to compute the complete asymptotic covariance matrix $\hat{\mt \Theta}$ is
 \begin{equation}
 \label{eq:mblock covariance matrix}
-\hat{\mt \Theta} = \overline{\mt B}_0^\dag \hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\vt p}_0} \overline{\mt B}_0^\dag,
+\hat{\mt \Theta} = \overline{\mt B}_0^\dag \hat{\mt \Sigma}_{\overline{\vt p}_0} \overline{\mt B}_0^\dag,
 \end{equation}
-where $\hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\vt p}_0}$ is matrix of covariances between the averages of $\{p_i(x)\}_{i=1}^m$ at the mixture state. A simple rationale for this result stems from the delta method. It is clear from Eqs.~\eqref{eq:mblock score vector} and \eqref{eq:mblock fisher information matrix} that $\nabla_{\vt f}\overline{\vt p}_0 = \overline{\mt B}_0$. Because this matrix is symmetric, it follows from Eq.~\eqref{eq:delta method} that $\hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\vt p}_0} = \overline{\mt B}_0 \hat{\mt \Theta} \overline{\mt B}_0$. Thus, Eq.~\eqref{eq:mblock covariance matrix} is nothing but a solution of this matrix equation, which requires a Moore-Penrose pseudoinverse because $\overline{\mt B}_0 \vt 1 = \vt 0$.
+where $\hat{\mt \Sigma}_{\overline{\vt p}_0}$ is matrix of covariances between the averages of $\{p_i(x)\}_{i=1}^m$ at the mixture state. A simple rationale for this result stems from the delta method. It is clear from Eqs.~\eqref{eq:mblock score vector} and \eqref{eq:mblock fisher information matrix} that $\nabla_{\vt f}\overline{\vt p}_0 = \overline{\mt B}_0$. Because this matrix is symmetric, it follows from Eq.~\eqref{eq:delta method} that $\hat{\mt \Sigma}_{\overline{\vt p}_0} = \overline{\mt B}_0 \hat{\mt \Theta} \overline{\mt B}_0$. Thus, Eq.~\eqref{eq:mblock covariance matrix} is nothing but a solution of this matrix equation, which requires a Moore-Penrose pseudoinverse because $\overline{\mt B}_0 \vt 1 = \vt 0$.
 
 By making $\overline{\vt y}_0 = \overline{\vt z}_0 = \overline{\vt p}_0$, this equation can be used together with Eq.~\eqref{eq:obm asymptotic covariance} to evaluate $\hat{\mt \Theta}$ via Eq.~\eqref{eq:mblock covariance matrix}.
 
-\subsection{Free-Energy Perturbation and Reweighting}
+\subsection{Reweighting of Equilibrium Properties}
+
+As explained in Sec.~\ref{sec:fep and reweighting}, reweighting is the process of extracting underlying information about a system from available samples and then using it to compute ensemble averages at a state which has not actually been simulated. Suppose that we are interested in computing the ensemble average of a vector-valued property $\vt y(x)$ at a state whose reduced potential is a given function $u(x)$. After determining the estimate $\hat{\vt f}$ of relative free energies of the states of a mixture, one can use Eq.~\eqref{eq:nbs sampling reweighting} and the MICS estimator in Eq.~\eqref{eq:mixture average estimator} to estimate $\langle \vt y \rangle_u$ by
+\begin{equation}
+\label{eq:reweighting from mixture}
+\overline{\vt y}_u = \frac{\overline{\vt z}_0}{\overline{w}_0},
+\end{equation}
+where $w(x) = e^{u_0(x) - u(x)}$ and ${\vt z}(x) = w(x) {\vt y}(x)$, with the reduced potential $u_0$ being computed via Eq.~\eqref{eq:mixture potential} with $f_i = {\hat f}_i$. Note that the uncertainty of this estimator comes from several sources. It evidently depends on the asymptotic variance $\hat \Sigma_{\overline w_0}$ and covariance matrix $\hat{\mt \Sigma}_{\overline{\vt z}_0}$, as well as on the cross-covariance between $\overline{\vt z}_0$ and $\overline w_0$. Furthermore, both $w(x)$ and $\vt z(x)$ depend on $u_0(x)$, which can only be computed using an estimated vector $\hat{\vt f}$ whose uncertainty also propagates to $\overline{\vt y}_u$. In the context of Bayesian analysis, Buta and Doss\cite{Buta_2011} suggested that $\overline{\vt y}_u$ should be estimated using a new collection of samples, different from the one used to estimate $\hat{\vt f}$. This would save us from including cross-covariances amongst $\overline{\vt z}_0$, $\overline w_0$, and $\hat{\vt f}$ in the analysis. This approach has been employed in subsequent work.\cite{Tan_2015, Roy_2018} However, it is not convenient in the context of molecular simulations due to the tremendous computational effort usually needed to generate the samples. Here we propose a simple way of including all covariances, based on the one-to-one relation between $\hat{\vt f}$ and $\overline{\vt p}_0$. We start by combining $\vt p$, $\vt z$, and $w$ into a unique vector-valued property $\vt s$ defined as
+\begin{equation*}
+\vt s(x) = \left[\begin{array}{c}
+\vt p(x) \\
+\vt z(x) \\ w(x)
+\end{array}\right]
+\end{equation*}
+
+This allows us to compute $\overline{\vt s}_0$ and $\hat{\mt \Sigma}_{\overline{\vt s}_0}$ using the MICS estimators respectively given by Eqs.~\eqref{eq:mixture average estimator} and \eqref{eq:mixture variance estimator}. After that, we can obtain the asymptotic covariance matrix $\hat{\mt \Sigma}_{\overline{\vt y}_u}$ by employing the delta method, Eq.~\eqref{eq:delta method}, which makes
+\begin{equation*}
+\hat{\mt \Sigma}_{\overline{\vt y}_u} = (\nabla_{\overline{\vt s}_0} {\overline{\vt y}_u}) \hat{\mt \Sigma}_{\overline{\vt s}_0} (\nabla_{\overline{\vt s}_0} {\overline{\vt y}_u}),
+\end{equation*}
+where the gradient $\nabla_{\overline{\vt s}_0} {\overline{\vt y}_u}$ is given by
+\begin{equation*}
+\nabla_{\overline{\vt s}_0} {\overline{\vt y}_u} = \left[\begin{array}{c}
+\nabla_{\overline{\vt p}_0} {\overline{\vt y}_u} \\
+\nabla_{\overline{\vt z}_0} {\overline{\vt y}_u} \\
+\nabla_{\overline{w}_0} {\overline{\vt y}_u}
+\end{array}\right] = \left[\begin{array}{c}
+\overline{\mt B}_0^\dag (\nabla_{\vt f} {\overline{\vt y}_u}) \\
+\overline{w}_0^{-1} {\mt I} \\
+-\overline{w}_0^{-1} \tr{\overline{\vt y}}_u
+\end{array}\right].
+\end{equation*}
+
+One may note that the chain rule was applied to factorize $\nabla_{\overline{\vt p}_0} {\overline{\vt y}_u}$ in the equation above, given that $\nabla_{\overline{\vt p}_0} {\vt f} = \overline{\mt B}_0^\dag$ (see Sec.~\ref{sec:uncertainties of free-energy differences}). In addition, $\nabla_{\overline{\vt z}_0} {\overline{\vt y}_u}$ and $\nabla_{\overline{w}_0} {\overline{\vt y}_u}$ were obtained directly from Eq.~\eqref{eq:reweighting from mixture}.
+\begin{align*}
+\nabla_{\vt f} {\overline{\vt y}_u} &= (\nabla_{\vt f} {\overline{\vt z}_0}) (\nabla_{\overline{\vt z}_0} {\overline{\vt y}_u}) + (\nabla_{\vt f} {\overline{w}_0}) (\nabla_{\overline{w}_0} {\overline{\vt y}_u}) \\
+&= \overline{(\nabla_{\vt f} {\overline{\vt z}_0})}_0 (\nabla_{\overline{\vt z}_0} {\overline{\vt y}_u}) + (\nabla_{\vt f} {\overline{w}_0}) (\nabla_{\overline{w}_0} {\overline{\vt y}_u}),
+\end{align*}
+
+
+\begin{equation*}
+\nabla_{\vt f} {\overline{\vt y}_u} = \overline{\vt p}_u \tr{\overline{\vt y}}_u - \overline{\mt \Omega}_u,
+\end{equation*}
+where $\mt \Omega(x) = \vt p(x) \tr{\vt y}(x)$. Of course, both $\overline{\vt p}_u$ and $\overline{\mt \Omega}_u$ can be computed as in Eq.~\eqref{eq:reweighting from mixture}.
+
+
+Finally,
+\begin{equation*}
+\nabla_{\overline{\vt s}_0} {\overline{\vt y}_u} = \left[\begin{array}{c}
+\overline{\mt B}_0^\dag (\overline{\vt p}_u \tr{\overline{\vt y}}_u - \overline{\mt \Pi}_u) \\
+\overline{w}_0^{-1} {\mt I} \\
+-\overline{w}_0^{-1} \tr{\overline{\vt y}}_u
+\end{array}\right],
+\end{equation*}
+where $\mt \Pi(x) = \vt p(x) \tr{\vt y}(x)$. 
+
+\subsection{DRAFT}
+
+using 
+
+Therefore,
+\begin{equation*}
+\overline{\vt s}_0 = \left[\begin{array}{c}
+\overline{\vt p}_0 \\
+\overline{\vt z}_0 \\
+\overline{w}_0
+\end{array}\right]
+\end{equation*}
+
+
+
+ to compute the reduced potential $u_0$ for every configuration of a mixture $\mathcal S$.
+
+
+From a mixture whose vector $\vt f$ has already been determined, one can compute the reduced potential $u_0$ of each configuration 
+
+has already been determined, we can use 
+
+
+
+\begin{equation*}
+\frac{\partial \overline{\vt y}}{\partial \overline{\vt z}_0} = \frac{1}{\overline{\alpha}_0} \mt I
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial \overline{\vt y}}{\partial \overline{\alpha}_0} = -\frac{\tr{\overline{\vt z}}_0}{\overline{\alpha}_0^2} = -\frac{\tr{\overline{\vt y}}}{\overline{\alpha}_0}
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial \overline{\vt y}}{\partial \overline{\vt p}_0} =
+\frac{\partial \vt f}{\partial \overline{\vt p}_0} \left( \frac{\partial \overline{\vt z}_0}{\partial \vt f} \frac{\partial \overline{\vt y}}{\partial \overline{\vt z}_0} + \frac{\partial \overline{\alpha}_0}{\partial \vt f} \frac{\partial \overline{\vt y}}{\partial \overline{\alpha}_0} \right)
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial \overline{\vt y}}{\partial \overline{\vt p}_0} =
+\frac{\overline{\mt B}_0^\dag}{\overline{\alpha}_0} \left( \frac{\partial \overline{\vt z}_0}{\partial \vt f} - \frac{\partial \overline{\alpha}_0}{\partial \vt f} \tr{\overline{\vt y}} \right)
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial \alpha}{\partial \vt f} = \frac{\partial u_0}{\partial \vt f} \alpha = -{\vt p}\alpha
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial \vt z}{\partial \vt f} = \frac{\partial \alpha}{\partial \vt f} \frac{\partial \vt z}{\partial \alpha} = -{\vt p} \alpha \tr{\vt y} = -{\vt p} \tr{\vt z}
+\end{equation*}
+
+
+\begin{equation*}
+\frac{\partial \overline{\vt y}}{\partial \overline{\vt p}_0} =
+-\frac{\overline{\mt B}_0^\dag}{\overline{\alpha}_0^2} \left[\overline{\alpha}_0 \overline{(\vt p\tr{\vt z})}_0 - \overline{(\alpha \vt p)}_0 \tr{\overline{\vt z}}_0 \right]
+\end{equation*}
+
+
+\begin{equation*}
+\mt \Xi = \left[\begin{array}{ccc}
+\hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\vt p}_0} & \hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\vt z}_0} & \hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\alpha}_0} \\
+\hat{\mt \Sigma}^t_{\overline{\vt p}_0 \overline{\vt z}_0} & \hat{\mt \Sigma}_{\overline{\vt z}_0 \overline{\vt z}_0} & \hat{\mt \Sigma}_{\overline{\vt z}_0 \overline{\alpha}_0} \\
+\hat{\mt \Sigma}_{\overline{\alpha}_0 \overline{\vt p}_0} & \hat{\mt \Sigma}_{\overline{\alpha}_0 \overline{\vt z}_0} & \hat{\mt \Sigma}_{\overline{\alpha}_0 \overline{\alpha}_0}
+\end{array}\right]
+\end{equation*}
+
+\begin{equation*}
+\vt s(x) = \left[\begin{array}{c} \vt p(x) \\ \vt z(x) \\ \alpha(x) \end{array}\right]
+\end{equation*}
+
+Therefore,
+\begin{equation*}
+\overline{\vt s}_0 = \left[\begin{array}{c} \overline{\vt p}_0 \\ \overline{\vt z}_0 \\ \overline{\alpha}_0 \end{array}\right]
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial \overline{\vt y}}{\partial \overline{\vt s}_0} =
+\frac{1}{\overline{\alpha}_0^2}
+\left[\begin{array}{c}
+-\overline{\mt B}_0^\dag \left\{\overline{\alpha}_0 \overline{(\vt p\tr{\vt z})}_0 - \overline{(\alpha \vt p)}_0 \tr{\overline{\vt z}}_0 \right\} \\
+\overline{\alpha}_0 {\mt I} \\
+-\tr{\overline{\vt z}}_0
+\end{array}\right]
+\end{equation*}
+
+\begin{equation*}
+\delta^2 \overline{\vt y} = \tr{\left(\frac{\partial \overline{\vt y}}{\partial \overline{\vt s}_0}\right)} \hat{\mt \Sigma}_{\overline{\vt s}_0} \left(\frac{\partial \overline{\vt y}}{\partial \overline{\vt s}_0}\right)
+\end{equation*}
+
+
+
+\subsection{Free-Energy Perturbation}
+
+\begin{equation*}
+\alpha(x) = e^{u_0(x) - u(x)}
+\end{equation*}
+
+\begin{equation*}
+f = -\ln \overline{\alpha}_0 - f_1
+\end{equation*}
+
+\begin{equation*}
+\frac{\partial f}{\partial \overline{\vt p}_0} = -\frac{1}{\overline{\alpha}_0} \frac{\partial \overline{\alpha}_0}{\partial \overline{\vt p}_0}  - \frac{\partial f_1}{\partial \overline{\vt p}_0} = -\overline{\mt B}_0^\dag \left( \frac{1}{\overline{\alpha}_0} \frac{\partial \overline{\alpha}_0}{\partial \vt f} + \frac{\partial f_1}{\partial \vt f} \right)
+\end{equation*}
+
+
+
+\subsection{DRAFT}
+
+
+\begin{equation*}
+f = -\ln \overline{\alpha}_0 - f_1
+\end{equation*}
+
+From the delta method:
+\begin{equation*}
+\left[\begin{array}{c} \delta^2 \langle \vt y \rangle \\ \delta^2 f \end{array}\right]
+\end{equation*}
+
+\begin{equation*}
+\mt \Xi = \left[\begin{array}{ccc} \hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\vt p}_0} & \hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\vt z}_0} & \hat{\mt \Sigma}_{\overline{\vt p}_0 \overline{\alpha}_0} \\ \hat{\mt \Sigma}_{\overline{\vt z}_0 \overline{\vt p}_0} & \hat{\mt \Sigma}_{\overline{\vt z}_0 \overline{\vt z}_0} & \hat{\mt \Sigma}_{\overline{\vt z}_0 \overline{\alpha}_0} \\ \hat{\mt \Sigma}_{\overline{\alpha}_0 \overline{\vt p}_0} & \hat{\mt \Sigma}_{\overline{\alpha}_0 \overline{\vt z}_0} & \hat{\mt \Sigma}_{\overline{\alpha}_0 \overline{\alpha}_0} \end{array}\right]
+\end{equation*}
+
+\begin{equation*}
+\vt z(x) = \left[\begin{array}{c}
+{\vt p}(x) \\
+e^{u_0(x) - u(x)}{\vt y}(x) \\
+e^{u_0(x) - u(x)}
+\end{array}\right]
+\end{equation*}
+
+\begin{equation*}
+\vt z = \left[\begin{array}{c}
+{\vt p} \\
+e^{u_0 - u}{\vt y} \\
+e^{u_0 - u}
+\end{array}\right]
+\end{equation*}
+
+
+
 
 Considering that $\langle{\vt y}\rangle_0$ is the average of $\vt y(x)$ at state $0$ computed with a vector $\vt f$ close to $\hat{\vt f}$
 \begin{equation*}
@@ -297,10 +493,6 @@ Bilinearity:
 Defining a new matrix-valued configurational property $\mt Z(x)$ so that $\mt Z = \nabla_{\vt f}\vt y$:
 \begin{equation}
 \hat{\mt \Xi} = \hat{\mt \sigma}_{\vt y\vt y} + 2\tr{\overline{\mt Z}_0} \overline{\mt B}_0^\dag \hat{\mt \sigma}_{\vt p\vt y} + \tr{\overline{\mt Z}_0}\hat{\mt \Theta}{\overline{\mt Z}_0}
-\end{equation}
-
-\begin{equation}
-{\vt y}(x) = e^{u_0(x)} \left[\begin{array}{c} A(x)e^{-u(x)} \\ e^{-u(x)} \end{array}\right]
 \end{equation}
 
 \begin{equation}

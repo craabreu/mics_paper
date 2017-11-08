@@ -1,0 +1,45 @@
+# TIP4P/2005 model (J Chem Phys, 123, 234505 (2005); http://dx.doi.org/10.1063/1.2121687)
+define		kB      as 1.9872E-3
+define		EpsOO   as {93.2*$kB}
+define		SigOO   as 3.1589
+define		dOH     as 0.9572
+define		dOM     as 0.1546
+define		theta0  as 104.52
+define		qH      as 0.5564
+
+#define		pair_style as lj/cut/coul/long
+
+atom_type	Ow $pair_style $EpsOO $SigOO
+atom_type	Hw $pair_style 0.0000 0.0000
+atom_type	Mw $pair_style 0.0000 0.0000
+
+mixing_rule	Ow Hw zero
+mixing_rule	Ow Mw zero
+mixing_rule	Hw Mw $pair_style 0.0000 0.0000
+
+mass		Hw  1.0080
+mass		Ow 15.9994
+mass		Mw 1.0E-20
+
+diameter	Ow 3.1
+diameter	Hw 2.0
+diameter	Mw 0.1
+
+bond_type	Ow Hw zero $dOH
+bond_type	Ow Mw zero $dOM
+
+atom		Ow  Ow 0.0000
+atom		Hw1 Hw $qH
+atom		Hw2 Hw $qH
+atom		Mw  Mw {-2*$qH}
+
+bond		Ow Hw1
+bond		Ow Hw2
+bond		Ow Mw
+
+build
+4
+Ow
+Mw  Ow $dOM
+Hw1 Ow $dOH Mw {$theta0/2}
+Hw2 Ow $dOH Mw {$theta0/2} Hw1 180

@@ -1,0 +1,31 @@
+define		solvent as tip4p-2005
+define		solute  as alpha-D-glucose
+
+define		g_cm3   as 0.602214
+define		density as {0.9979*$g_cm3}
+define		number  as 1500
+define		seed    as 4328
+
+define		pair_style as lj/cut/coul/dsf
+include		GLYCAM_06j.playmol
+include		$solute.playmol
+
+include		$solvent.playmol
+
+mixing_rule	Mw * zero
+mixing_rule	Hw * zero
+mixing_rule	Ow * lj/cut/softcore geometric arithmetic
+mixing_rule	*  * $pair_style     geometric arithmetic
+
+box		density $density
+
+align		mol(O1) x y
+
+packmol		fix  mol(O1) 0.0 0.0 0.0
+packmol		pack mol(Ow) $number
+packmol		seed $seed retry 0.98 action execute
+
+write		lmp/models ${solute}_${solvent}.lmp
+write		lammpstrj ${solute}_${solvent}.lammpstrj
+write		summary
+

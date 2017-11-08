@@ -1,0 +1,53 @@
+variable	name string alpha-D-glucose_tip4p-2005
+log		${name}-${lambda}.log
+variable	seed  equal 2743
+variable	temp  equal 300.0 # K
+variable	press equal 0.9869233 # atm
+variable	dt    equal 1.0 # fs
+variable	rc    equal 9.0 # A
+variable	alpha equal 0.2 # 1/A
+
+variable	nthermo equal 20
+variable	nsteps  equal 5000000
+
+units           real
+atom_style      full
+
+pair_style      hybrid/softcore lj/cut/coul/dsf ${alpha} ${rc} zero ${rc} lj/cut/softcore ${rc}
+bond_style      hybrid harmonic zero
+angle_style	harmonic
+dihedral_style	charmm
+special_bonds	lj/coul 0.0 0.0 1.0 # GLYCAM
+
+pair_modify	tail yes
+pair_modify	pair lj/cut/softcore lambda ${lambda} &
+                set_grid 21 0.0 0.05 0.1 0.15 0.2 0.25 0.3 0.35 0.4 0.45 0.5 &
+                                0.55 0.6 0.65 0.7 0.75 0.8 0.85 0.9 0.95 1.0
+
+read_data       ${name}.lmp
+velocity        all create ${temp} ${seed}
+
+variable	tdamp equal 100*${dt}
+variable	pdamp equal 1000*${dt}
+timestep	${dt}
+
+group		solute type <  7
+group		water  type >= 7
+
+fix		NPT water rigid/npt/small molecule &
+                temp ${temp} ${temp} ${tdamp}    &
+                iso ${press} ${press} ${pdamp} dilate all
+
+fix		NVT solute nvt &
+                temp ${temp} ${temp} ${tdamp}
+
+fix		shake solute shake 0.0001 20 0 m 1.008
+
+compute		dE all softcore/derivative
+compute		E  all softcore/grid vdwl
+
+thermo          ${nthermo}
+thermo_style	custom step temp press lx density pe ecoul c_dE c_E[*]
+
+run		${nsteps}
+
