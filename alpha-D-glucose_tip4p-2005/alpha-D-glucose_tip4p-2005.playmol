@@ -6,7 +6,10 @@ define		density as {0.9979*$g_cm3}
 define		number  as 1500
 define		seed    as 4328
 
-define		pair_style as lj/cut/coul/dsf
+define      vdwl as lj/cut
+define      coul as coul/damp/sf
+
+define		pair_style as $vdwl/$coul
 include		GLYCAM_06j.playmol
 include		$solute.playmol
 
@@ -14,10 +17,10 @@ include		$solvent.playmol
 
 mixing_rule	Mw * zero
 mixing_rule	Hw * zero
-mixing_rule	Ow * lj/cut/softcore geometric arithmetic
-mixing_rule	*  * $pair_style     geometric arithmetic
+mixing_rule	Ow * $vdwl/softcore geometric arithmetic
+mixing_rule	*  * $vdwl/$coul geometric arithmetic
 
-box		density $density
+box		    density $density
 
 align		mol(O1) x y
 

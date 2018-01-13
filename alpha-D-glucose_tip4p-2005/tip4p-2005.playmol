@@ -7,15 +7,13 @@ define		dOM     as 0.1546
 define		theta0  as 104.52
 define		qH      as 0.5564
 
-#define		pair_style as lj/cut/coul/long
-
-atom_type	Ow $pair_style $EpsOO $SigOO
-atom_type	Hw $pair_style 0.0000 0.0000
-atom_type	Mw $pair_style 0.0000 0.0000
+atom_type	Ow $vdwl $EpsOO $SigOO
+atom_type	Hw $coul
+atom_type	Mw $coul
 
 mixing_rule	Ow Hw zero
 mixing_rule	Ow Mw zero
-mixing_rule	Hw Mw $pair_style 0.0000 0.0000
+mixing_rule	Hw Mw $coul
 
 mass		Hw  1.0080
 mass		Ow 15.9994
