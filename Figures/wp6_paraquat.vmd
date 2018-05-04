@@ -1,4 +1,4 @@
-#!/usr/local/bin/vmd
+#!/usr/local/bin/vmd -e
 # VMD script written by save_state $Revision: 1.48 $
 # VMD version: 1.9.4a12
 set viewplist {}
@@ -343,13 +343,13 @@ display dof_focaldist 0.700000
 mol new wp6.xyz type xyz first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
 mol delrep 0 top
 mol representation Licorice 0.400000 37.000000 37.000000
-mol color PosX
+mol color PosZ
 mol selection {all}
 mol material AOChalky
 mol addrep top
 mol selupdate 0 top 0
 mol colupdate 0 top 0
-mol scaleminmax top 0 -8.578393 8.578165
+mol scaleminmax top 0 -8.628664 8.628515
 mol smoothrep top 0 0
 mol drawframes top 0 {now}
 mol clipplane center 0 0 top {0.0 0.0 0.0}
@@ -377,13 +377,13 @@ mol clipplane color  5 0 top {0.5 0.5 0.5 }
 mol clipplane normal 5 0 top {0.0 0.0 1.0}
 mol clipplane status 5 0 top {0}
 mol representation Surf 3.000000 0.000000
-mol color PosX
+mol color PosZ
 mol selection {all}
 mol material Glass1
 mol addrep top
 mol selupdate 1 top 0
 mol colupdate 1 top 0
-mol scaleminmax top 1 -8.578393 8.578165
+mol scaleminmax top 1 -8.628664 8.628515
 mol smoothrep top 1 0
 mol drawframes top 1 {now}
 mol clipplane center 0 1 top {0.0 0.0 0.0}
@@ -410,8 +410,9 @@ mol clipplane center 5 1 top {0.0 0.0 0.0}
 mol clipplane color  5 1 top {0.5 0.5 0.5 }
 mol clipplane normal 5 1 top {0.0 0.0 1.0}
 mol clipplane status 5 1 top {0}
+mol showrep top 1 0
 mol rename top wp6
-set viewpoints([molinfo top]) {{{1 0 0 -3.19311e-09} {0 1 0 3.40598e-08} {0 0 1 4.25747e-09} {0 0 0 1}} {{0.805613 0.0224597 0.59202 0} {0.162567 0.952548 -0.257356 0} {-0.569707 0.303572 0.763734 0} {0 0 0 1}} {{0.139023 0 0 0} {0 0.139023 0 0} {0 0 0.139023 0} {0 0 0 1}} {{1 0 0 0} {0 1 0 0} {0 0 1 0} {0 0 0 1}}}
+set viewpoints([molinfo top]) {{{1 0 0 -3.19311e-09} {0 1 0 3.40598e-08} {0 0 1 4.25747e-09} {0 0 0 1}} {{-0.916514 0.0872198 0.390382 0} {0.191031 0.952899 0.235592 0} {-0.351443 0.290499 -0.890007 0} {0 0 0 1}} {{0.138911 0 0 0} {0 0.138911 0 0} {0 0 0.138911 0} {0 0 0 1}} {{1 0 0 0} {0 1 0 0} {0 0 1 0} {0 0 0 1}}}
 lappend viewplist [molinfo top]
 # done with molecule 0
 mol new /home/charlles/Documents/Autoria/2018/MICS/Figures/paraquat.xyz type xyz first 0 last -1 step 1 filebonds 1 autobonds 1 waitfor all
@@ -450,8 +451,9 @@ mol clipplane center 5 0 top {0.0 0.0 0.0}
 mol clipplane color  5 0 top {0.5 0.5 0.5 }
 mol clipplane normal 5 0 top {0.0 0.0 1.0}
 mol clipplane status 5 0 top {0}
+mol showrep top 0 0
 mol representation Licorice 0.400000 37.000000 37.000000
-mol color ColorID 16
+mol color ColorID 2
 mol selection {all}
 mol material BrushedMetal
 mol addrep top
@@ -485,7 +487,7 @@ mol clipplane color  5 1 top {0.5 0.5 0.5 }
 mol clipplane normal 5 1 top {0.0 0.0 1.0}
 mol clipplane status 5 1 top {0}
 mol rename top paraquat.xyz
-set viewpoints([molinfo top]) {{{1 0 0 -3.19311e-09} {0 1 0 3.40598e-08} {0 0 1 4.25747e-09} {0 0 0 1}} {{0.805613 0.0224597 0.59202 0} {0.162567 0.952548 -0.257356 0} {-0.569707 0.303572 0.763734 0} {0 0 0 1}} {{0.139023 0 0 0} {0 0.139023 0 0} {0 0 0.139023 0} {0 0 0 1}} {{1 0 0 0} {0 1 0 0} {0 0 1 0} {0 0 0 1}}}
+set viewpoints([molinfo top]) {{{1 0 0 -3.19311e-09} {0 1 0 3.40598e-08} {0 0 1 4.25747e-09} {0 0 0 1}} {{-0.916514 0.0872198 0.390382 0} {0.191031 0.952899 0.235592 0} {-0.351443 0.290499 -0.890007 0} {0 0 0 1}} {{0.138911 0 0 0} {0 0.138911 0 0} {0 0 0.138911 0} {0 0 0 1}} {{1 0 0 0} {0 1 0 0} {0 0 1 0} {0 0 0 1}}}
 lappend viewplist [molinfo top]
 set topmol [molinfo top]
 # done with molecule 1
@@ -677,11 +679,9 @@ color scale colors WBlk {1.0 1.0 1.0} {0.5 0.5 0.5} {0.0 0.0 0.0}
 vmdrestoremycolors
 label textsize 1.0
 
-
-
 axes location off
-render Tachyon wp6_paraquat "/usr/local/lib/vmd/tachyon_LINUXAMD64" -aasamples 12 %s -format TARGA -o %s.tga -fullshade -res 900 960
+render TachyonL-OSPRay wp6_paraquat "/usr/local/lib/vmd/tachyon_LINUXAMD64" -aasamples 12 %s -format TARGA -o %s.tga -fullshade -res 900 960
 exec convert -density 300x300 wp6_paraquat.tga ../wp6_paraquat.png
 exec rm wp6_paraquat wp6_paraquat.tga
-exit
+#exit
 
