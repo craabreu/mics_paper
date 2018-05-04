@@ -40,5 +40,5 @@ plt.ylabel(r'$\Delta G_{solv}$ (kcal/mol)', fontsize=fs)
 plt.legend(loc='lower right', frameon=False, fontsize=fs)
 
 print("Saving PDF file...")
-plt.savefig('%s.pdf' % filebase, format='pdf', dpi=600, bbox_inches='tight')
+plt.savefig('../%s.pdf' % filebase, format='pdf', dpi=600, bbox_inches='tight')
 # plt.show()

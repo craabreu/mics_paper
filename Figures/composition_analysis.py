@@ -39,5 +39,5 @@ ax.set_ylabel('Probability density')
 plt.legend(loc='upper right', frameon=False)
 
 print("Saving PDF file...")
-plt.savefig('%s.pdf' % filebase, format='pdf', dpi=600, bbox_inches='tight')
+plt.savefig('../%s.pdf' % filebase, format='pdf', dpi=600, bbox_inches='tight')
 # plt.show()

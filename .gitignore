@@ -1,8 +1,10 @@
-mblock.aux
-mblock.bbl
-mblock.blg
-mblock.log
-mblock.pdf
-mblock.synctex.gz
-mblockNotes.bib
+mics.aux
+mics.bbl
+mics.blg
+mics.log
+mics.pdf
+mics.synctex.gz
+micsNotes.bib
 References/
+acs-mics.bib
+mics.out
